@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
@@ -78,6 +79,22 @@ public class Util {
         List<Map<String, ?>> out = new ArrayList<>();
         for (MapSerializable map : input) {
             out.add(map.toMap());
+        }
+        return out;
+    }
+
+    public static <T extends MapSerializable> List<T> mapListToList(List<Map<String, ?>> input, Class<T> clazz) {
+        List<T> out = new ArrayList<>();
+        for (Map<String, ?> map : input) {
+            T instance;
+            try {
+                instance = clazz.getConstructor().newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            instance.fromMap(map);
+            out.add(instance);
         }
         return out;
     }

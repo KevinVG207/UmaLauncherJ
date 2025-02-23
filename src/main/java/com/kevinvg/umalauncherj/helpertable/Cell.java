@@ -16,6 +16,11 @@ public class Cell {
         this.value = value;
     }
 
+    public Cell(String value, String title) {
+        this.value = value;
+        this.title = title;
+    }
+
     public String makeTd() {
         var curStyle = this.style;
         if (this.bold) {

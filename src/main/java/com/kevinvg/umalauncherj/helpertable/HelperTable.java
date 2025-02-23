@@ -30,6 +30,9 @@ public class HelperTable {
 
         System.out.println(presetAsJson);
 
-        return preset.toString();
+        Preset loadedPreset = new Preset();
+        loadedPreset.fromMap(presetAsMap);
+
+        return loadedPreset.toString();
     }
 }
