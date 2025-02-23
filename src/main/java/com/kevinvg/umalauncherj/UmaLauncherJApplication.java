@@ -1,4 +1,4 @@
-package com.kevinvg.UmaLauncherJ;
+package com.kevinvg.umalauncherj;
 
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

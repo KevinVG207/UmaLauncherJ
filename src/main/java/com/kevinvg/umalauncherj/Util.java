@@ -1,4 +1,4 @@
-package com.kevinvg.UmaLauncherJ;
+package com.kevinvg.umalauncherj;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -8,12 +8,9 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Util {
     private static Path gameFolder = null;
@@ -47,15 +44,15 @@ public class Util {
             throw new RuntimeException(e);
         }
 
-        var contents = node.get("contents");
+        var contents = node.path("contents");
 
         if (contents.isMissingNode() || !contents.isArray()) {
             throw new RuntimeException("DMM config contents not found");
         }
 
         for (var product : contents) {
-            if (product.get("productId").asText().equals("umamusume")) {
-                var tmp = product.get("detail").get("path");
+            if (product.path("productId").asText().equals("umamusume")) {
+                var tmp = product.path("detail").path("path");
                 if (tmp.isTextual()) {
                     try {
                         gameFolder = Paths.get(tmp.asText());

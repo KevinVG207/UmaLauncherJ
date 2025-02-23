@@ -1,4 +1,4 @@
-package com.kevinvg.UmaLauncherJ;
+package com.kevinvg.umalauncherj;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +39,7 @@ public class MsgPackHandler {
                 return list;
             case MAP:
                 int mapSize = unpacker.unpackMapHeader();
-                Map<Object, Object> map = new HashMap<>(mapSize);
+                Map<Object, Object> map = HashMap.newHashMap(mapSize);
                 for (int i = 0; i < mapSize; i++) {
                     Object key = unpack(unpacker);
                     Object value = unpack(unpacker);

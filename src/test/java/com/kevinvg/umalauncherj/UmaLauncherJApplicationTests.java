@@ -1,4 +1,4 @@
-package com.kevinvg.UmaLauncherJ;
+package com.kevinvg.umalauncherj;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

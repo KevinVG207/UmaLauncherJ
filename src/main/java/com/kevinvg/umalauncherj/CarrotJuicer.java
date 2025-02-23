@@ -1,19 +1,16 @@
-package com.kevinvg.UmaLauncherJ;
+package com.kevinvg.umalauncherj;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kevinvg.umalauncherj.packets.ResponsePacket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
@@ -23,13 +20,30 @@ public class CarrotJuicer {
         messagesFolder = Util.getGameFolder().resolve("CarrotJuicer");
     }
 
+    private final CarrotJuicerTasks carrotJuicerTasks;
+
+    CarrotJuicerTasks tasks;
+
+    @Autowired
+    CarrotJuicer(CarrotJuicerTasks tasks, CarrotJuicerTasks carrotJuicerTasks) {
+        this.tasks = tasks;
+        this.carrotJuicerTasks = carrotJuicerTasks;
+    }
+
     @Scheduled(fixedDelay = 1000)
     private void processPackets() {
         System.out.println("Processing packets");
         var newPacketNames = getNewPacketNames();
 
         for (var path : newPacketNames) {
-            this.processPacket(path);
+            try {
+                this.processPacket(path);
+            } catch (Exception e) {
+                // FIXME: Catching everything blech
+                System.out.println("Error processing packet " + path);
+                System.out.println(e.getMessage());
+                e.printStackTrace();
+            }
         }
 
     }
@@ -64,12 +78,23 @@ public class CarrotJuicer {
     void processResponse(Path packetPath) {
         System.out.println("Processing response: " + packetPath);
         JsonNode root = MsgPackHandler.responseMsgpackToJsonNode(packetPath);
-        System.out.println(root);
+//        System.out.println(root);
+
+        var dataNode = root.path("data");
+
+        if (dataNode.isMissingNode() || !dataNode.isObject()) {
+            System.err.println("Response packet does not contain 'data'");
+            return;
+        }
+
+        System.out.println("Root node contains 'data'");
+
+        carrotJuicerTasks.runTasks(new ResponsePacket(dataNode));
     }
 
     void processRequest(Path packetPath) {
         System.out.println("Processing request: " + packetPath);
         JsonNode root = MsgPackHandler.requestMsgPackToJsonNode(packetPath);
-        System.out.println(root);
+//        System.out.println(root);
     }
 }
