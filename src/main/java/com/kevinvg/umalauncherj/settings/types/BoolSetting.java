@@ -1,6 +1,8 @@
-package com.kevinvg.umalauncherj.settings;
+package com.kevinvg.umalauncherj.settings.types;
 
-public class BoolSetting extends Setting<Boolean>{
+import com.kevinvg.umalauncherj.settings.Setting;
+
+public class BoolSetting extends Setting<Boolean> {
     public BoolSetting(Boolean value, String name, String description) {
         this(value, name, description, false);
     }

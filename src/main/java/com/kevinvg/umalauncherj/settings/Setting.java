@@ -1,24 +1,35 @@
 package com.kevinvg.umalauncherj.settings;
 
+import lombok.Getter;
+
 public abstract class Setting<T> {
     private final String name;
     private final String description;
     private boolean hidden;
-    private T value;
+    @Getter
+    protected T value;
     private String tab = "General";
 
-    Setting(T value, String name, String description, boolean hidden) {
+    protected Setting(T value, String name, String description, boolean hidden) {
         this.value = value;
         this.name = name;
         this.description = description;
         this.hidden = hidden;
     }
 
-    public T getValue() {
-        return value;
+    @SuppressWarnings("unchecked")
+    public final boolean setValue(Object value) {
+        T castValue;
+        try {
+            castValue = (T) value;
+        } catch (ClassCastException e) {
+            return false;
+        }
+        return _setValue(castValue);
     }
 
-    public void setValue(T value) {
+    protected boolean _setValue(T value) {
         this.value = value;
+        return true;
     }
 }

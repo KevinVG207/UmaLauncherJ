@@ -4,13 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Util {
     private static Path gameFolder = null;
@@ -69,5 +72,13 @@ public class Util {
         }
 
         return gameFolder;
+    }
+
+    public static List<Map<String, ?>> listToMap(List<? extends MapSerializable> input) {
+        List<Map<String, ?>> out = new ArrayList<>();
+        for (MapSerializable map : input) {
+            out.add(map.toMap());
+        }
+        return out;
     }
 }

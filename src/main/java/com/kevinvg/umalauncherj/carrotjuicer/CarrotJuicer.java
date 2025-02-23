@@ -1,6 +1,8 @@
-package com.kevinvg.umalauncherj;
+package com.kevinvg.umalauncherj.carrotjuicer;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.kevinvg.umalauncherj.MsgPackHandler;
+import com.kevinvg.umalauncherj.Util;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;

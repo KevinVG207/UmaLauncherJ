@@ -1,10 +1,12 @@
-package com.kevinvg.umalauncherj;
+package com.kevinvg.umalauncherj.carrotjuicer;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.kevinvg.umalauncherj.gametora.GtLanguage;
 import com.kevinvg.umalauncherj.gametora.GtUtil;
+import com.kevinvg.umalauncherj.helpertable.HelperTable;
 import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
+import lombok.experimental.Helper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,6 +16,13 @@ import java.util.List;
 public class CarrotJuicerTasks {
     private ResponsePacket prevResponse;
     private RequestPacket prevRequest;
+
+    private HelperTable helperTable;
+
+    @Autowired
+    CarrotJuicerTasks(HelperTable helperTable) {
+        this.helperTable = helperTable;
+    }
 
     public void runTasks(ResponsePacket response) {
         if (!response.getCharaInfo().isMissingNode()) {
@@ -45,5 +54,7 @@ public class CarrotJuicerTasks {
 
         var url = GtUtil.makeHelperUrl(cardId, scenarioId, supportIds, GtLanguage.ENGLISH);
         System.out.println("GT URL: " + url);
+
+        this.helperTable.generateHtml();
     }
 }
