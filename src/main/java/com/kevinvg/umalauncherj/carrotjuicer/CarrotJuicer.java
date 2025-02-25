@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.kevinvg.umalauncherj.MsgPackHandler;
 import com.kevinvg.umalauncherj.Util;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import io.quarkus.scheduler.Scheduled;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-@Component
+@Singleton
 public class CarrotJuicer {
     private static final Path messagesFolder;
     static {
@@ -26,14 +26,14 @@ public class CarrotJuicer {
 
     CarrotJuicerTasks tasks;
 
-    @Autowired
+    @Inject
     CarrotJuicer(CarrotJuicerTasks tasks, CarrotJuicerTasks carrotJuicerTasks) {
         this.tasks = tasks;
         this.carrotJuicerTasks = carrotJuicerTasks;
     }
 
-    @Scheduled(fixedDelay = 1000)
-    private void processPackets() {
+    @Scheduled(every="0.5s")
+    void processPackets() {
         System.out.println("Processing packets");
         var newPacketNames = getNewPacketNames();
 

@@ -3,11 +3,13 @@ package com.kevinvg.umalauncherj.helpertable;
 import com.kevinvg.umalauncherj.MapSerializable;
 import com.kevinvg.umalauncherj.settings.Settings;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 public abstract class Row extends MapSerializable {
     protected String longName = "";

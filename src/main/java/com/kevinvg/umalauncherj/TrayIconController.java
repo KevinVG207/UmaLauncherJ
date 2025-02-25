@@ -1,13 +1,12 @@
 package com.kevinvg.umalauncherj;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-@Component
+@Singleton
 public class TrayIconController {
     private TrayIcon trayIcon = null;
     private SystemTray systemTray = null;
@@ -16,7 +15,7 @@ public class TrayIconController {
 
     private Settings settings;
 
-    @Autowired
+    @Inject
     public TrayIconController(Settings settings) {
         this.settings = settings;
 

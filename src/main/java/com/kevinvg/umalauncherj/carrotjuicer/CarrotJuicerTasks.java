@@ -5,21 +5,20 @@ import com.kevinvg.umalauncherj.gametora.GtUtil;
 import com.kevinvg.umalauncherj.helpertable.HelperTable;
 import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
-import lombok.experimental.Helper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Singleton
 public class CarrotJuicerTasks {
     private ResponsePacket prevResponse;
     private RequestPacket prevRequest;
 
     private HelperTable helperTable;
 
-    @Autowired
+    @Inject
     CarrotJuicerTasks(HelperTable helperTable) {
         this.helperTable = helperTable;
     }

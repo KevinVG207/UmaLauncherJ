@@ -1,7 +1,7 @@
 package com.kevinvg.umalauncherj.settings;
 
-import org.springframework.stereotype.Component;
+import jakarta.inject.Singleton;
 
-@Component
+@Singleton
 public class AppSettings extends Settings{
 }

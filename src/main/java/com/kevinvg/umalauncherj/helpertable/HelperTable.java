@@ -3,9 +3,9 @@ package com.kevinvg.umalauncherj.helpertable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import org.springframework.stereotype.Component;
+import jakarta.inject.Singleton;
 
-@Component
+@Singleton
 public class HelperTable {
     ObjectMapper mapper = new ObjectMapper();
 
