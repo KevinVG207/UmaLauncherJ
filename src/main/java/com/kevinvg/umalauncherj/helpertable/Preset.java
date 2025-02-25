@@ -12,14 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class Preset extends MapSerializable {
+public class Preset implements MapSerializable {
     private String name = "";
     private List<Row> rows = new ArrayList<>();
     private PresetSettings settings = new PresetSettings();
 
-    Preset() {
+    public Preset() {
         rows.add(new CurrentStatsRow());
     }
 

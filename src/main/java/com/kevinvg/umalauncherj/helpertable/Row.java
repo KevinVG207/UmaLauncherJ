@@ -9,9 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public abstract class Row extends MapSerializable {
+public abstract class Row implements MapSerializable {
     protected String longName = "";
     protected String shortName = "";
     protected String description = "";
@@ -22,7 +21,6 @@ public abstract class Row extends MapSerializable {
 
     public abstract List<Cell> getCells(Map<String, CommandState> commandStates);
 
-    @Override
     public Map<String, ?> toMap() {
         Map<String, Object> out = new HashMap<>();
         out.put("rowType", rowType.name());
@@ -30,7 +28,6 @@ public abstract class Row extends MapSerializable {
         return out;
     }
 
-    @Override
     public void fromMap(Map<String, ?> map) {
         try {
             this.rowType = RowType.valueOf((String) map.get("rowType"));

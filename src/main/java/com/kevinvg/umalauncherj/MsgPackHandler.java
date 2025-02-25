@@ -13,6 +13,8 @@ import java.util.*;
 public class MsgPackHandler {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private MsgPackHandler() {}
+
     // Boilerplate nonsense
     private static Object unpack(MessageUnpacker unpacker) throws IOException {
         if (!unpacker.hasNext()) {

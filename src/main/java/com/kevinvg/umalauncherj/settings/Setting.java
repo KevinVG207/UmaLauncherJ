@@ -8,17 +8,26 @@ public abstract class Setting<T> {
     private boolean hidden;
     @Getter
     protected T value;
-    private String tab = "General";
+    private final String tab;
+
+    protected Setting(T value, String name, String description) {
+        this(value, name, description, false);
+    }
 
     protected Setting(T value, String name, String description, boolean hidden) {
+        this(value, name, description, hidden, "General");
+    }
+
+    protected Setting(T value, String name, String description, boolean hidden, String tab) {
         this.value = value;
         this.name = name;
         this.description = description;
         this.hidden = hidden;
+        this.tab = tab;
     }
 
     @SuppressWarnings("unchecked")
-    public final boolean setValue(Object value) {
+    public boolean setValue(Object value) {
         T castValue;
         try {
             castValue = (T) value;
@@ -32,4 +41,5 @@ public abstract class Setting<T> {
         this.value = value;
         return true;
     }
+
 }

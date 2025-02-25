@@ -13,12 +13,8 @@ public class TrayIconController {
 
     private final String iconLocation = "trayIcons/default.png";
 
-    private Settings settings;
-
     @Inject
-    public TrayIconController(Settings settings) {
-        this.settings = settings;
-
+    public TrayIconController() {
         if (!SystemTray.isSupported()) {
             System.err.println("SystemTray not supported");
             return;
@@ -53,8 +49,6 @@ public class TrayIconController {
         } catch (AWTException e) {
             throw new RuntimeException(e);
         }
-
-        this.settings.getSetting("TestSetting");
     }
 
     private void quitAction() {

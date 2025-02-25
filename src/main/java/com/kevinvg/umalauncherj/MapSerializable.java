@@ -2,7 +2,7 @@ package com.kevinvg.umalauncherj;
 
 import java.util.Map;
 
-public abstract class MapSerializable {
-    public abstract Map<String, ?> toMap();
-    public abstract void fromMap(Map<String, ?> map);
+public interface MapSerializable {
+    Map<String, ?> toMap();
+    void fromMap(Map<String, ?> map);
 }
