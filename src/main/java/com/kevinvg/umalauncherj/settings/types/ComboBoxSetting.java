@@ -29,4 +29,13 @@ public class ComboBoxSetting extends Setting<String> {
         this.value = value;
         return true;
     }
+
+    @Override
+    public String getValue() {
+        if (!choices.isEmpty() && !choices.contains(value)) {
+            return choices.getFirst();
+        }
+
+        return value;
+    }
 }

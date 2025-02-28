@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public abstract class Settings {
-    protected final Map<String, Setting<?>> settings = new HashMap<>();
+public abstract class Settings<T extends Enum<?>> {
+    protected final Map<T, Setting<?>> settings = new HashMap<>();
 }
