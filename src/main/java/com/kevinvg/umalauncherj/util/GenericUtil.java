@@ -1,4 +1,4 @@
-package com.kevinvg.umalauncherj;
+package com.kevinvg.umalauncherj.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,26 +7,22 @@ import javax.swing.*;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-public class Util {
+public class GenericUtil {
     private static Path gameFolder = null;
 
     private static ObjectMapper jsonMapper = new ObjectMapper();
 
     private static final String DMM_CONFIG_PATH = System.getenv("APPDATA") + "/dmmgameplayer5/dmmgame.cnf";
 
-    private Util(){}
+    private GenericUtil(){}
 
     public static Image loadImageFromResources(String path) {
-        URL url = Util.class.getClassLoader().getResource(path);
+        URL url = GenericUtil.class.getClassLoader().getResource(path);
         if (url == null) {
             System.err.println("Could not find resource: " + path);
             return null;
