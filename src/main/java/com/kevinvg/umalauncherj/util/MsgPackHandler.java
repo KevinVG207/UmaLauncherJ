@@ -1,4 +1,4 @@
-package com.kevinvg.umalauncherj;
+package com.kevinvg.umalauncherj.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

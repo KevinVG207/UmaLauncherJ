@@ -1,8 +1,8 @@
 package com.kevinvg.umalauncherj.carrotjuicer;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.kevinvg.umalauncherj.MsgPackHandler;
-import com.kevinvg.umalauncherj.Util;
+import com.kevinvg.umalauncherj.util.MsgPackHandler;
+import com.kevinvg.umalauncherj.util.GenericUtil;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.inject.Inject;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class CarrotJuicer {
     private static final Path messagesFolder;
     static {
-        messagesFolder = Util.getGameFolder().resolve("CarrotJuicer");
+        messagesFolder = GenericUtil.getGameFolder().resolve("CarrotJuicer");
     }
 
     private final CarrotJuicerTasks carrotJuicerTasks;
