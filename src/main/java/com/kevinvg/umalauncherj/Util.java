@@ -74,28 +74,4 @@ public class Util {
 
         return gameFolder;
     }
-
-    public static List<Map<String, ?>> listToMap(List<? extends MapSerializable> input) {
-        List<Map<String, ?>> out = new ArrayList<>();
-        for (MapSerializable map : input) {
-            out.add(map.toMap());
-        }
-        return out;
-    }
-
-    public static <T extends MapSerializable> List<T> mapListToList(List<Map<String, ?>> input, Class<T> clazz) {
-        List<T> out = new ArrayList<>();
-        for (Map<String, ?> map : input) {
-            T instance;
-            try {
-                instance = clazz.getConstructor().newInstance();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            instance.fromMap(map);
-            out.add(instance);
-        }
-        return out;
-    }
 }

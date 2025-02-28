@@ -11,6 +11,6 @@ import java.util.List;
 public class AppSettings extends Settings{
     public AppSettings() {
         this.settings.put("training_helper_table_preset_list",
-                new ListSetting<>(new MappableList<>(Preset.class, List.of(new Preset(), new Preset(), new Preset())), Preset.class, "Training helper table preset list", "List of presets for the automatic training event helper.", true));
+                new ListSetting<>(List.of(new Preset(), new Preset(), new Preset()), "Training helper table preset list", "List of presets for the automatic training event helper.", true));
     }
 }

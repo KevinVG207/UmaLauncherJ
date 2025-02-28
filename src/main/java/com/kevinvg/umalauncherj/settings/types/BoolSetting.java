@@ -1,7 +1,11 @@
 package com.kevinvg.umalauncherj.settings.types;
 
 import com.kevinvg.umalauncherj.settings.Setting;
+import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
+@Builder
+@AllArgsConstructor
 public class BoolSetting extends Setting<Boolean> {
     public BoolSetting(Boolean value, String name, String description) {
         super(value, name, description);
