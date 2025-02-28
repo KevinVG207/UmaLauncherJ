@@ -1,12 +1,15 @@
 package com.kevinvg.umalauncherj.settings.types;
 
 import com.kevinvg.umalauncherj.settings.Setting;
+import lombok.*;
 
 import java.util.Collections;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class ComboBoxSetting extends Setting<String> {
-    private List<String> choices;
+    private List<String> choices = Collections.emptyList();
 
     public ComboBoxSetting(String value, String name, String description, List<String> choices) {
         this(value, name, description, false, choices);

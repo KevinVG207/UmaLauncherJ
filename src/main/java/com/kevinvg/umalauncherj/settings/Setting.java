@@ -1,14 +1,22 @@
 package com.kevinvg.umalauncherj.settings;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.MINIMAL_CLASS
+)
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Setting<T> {
-    private final String name;
-    private final String description;
+    private String name = "";
+    private String description = "";
     private boolean hidden;
-    @Getter
     protected T value;
-    private final String tab;
+    private String tab = "General";
 
     protected Setting(T value, String name, String description) {
         this(value, name, description, false);

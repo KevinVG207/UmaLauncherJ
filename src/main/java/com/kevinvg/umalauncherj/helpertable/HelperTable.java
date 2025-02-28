@@ -1,6 +1,7 @@
 package com.kevinvg.umalauncherj.helpertable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevinvg.umalauncherj.settings.AppSettings;
 import jakarta.annotation.PostConstruct;
@@ -10,6 +11,9 @@ import jakarta.inject.Singleton;
 @Singleton
 public class HelperTable {
     ObjectMapper mapper = new ObjectMapper();
+//    {
+//        mapper.registerModule(new ParanamerModule());
+//    }
 
     private final AppSettings appSettings;
 
@@ -27,27 +31,40 @@ public class HelperTable {
         System.out.println("HelperTable.generateHtml");
 
         var preset = new Preset();
-        var presetAsMap = preset.toMap();
+
         String presetAsJson;
         try {
-            presetAsJson = mapper.writerWithDefaultPrettyPrinter().withDefaultPrettyPrinter().writeValueAsString(presetAsMap);
+            presetAsJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(preset);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
         System.out.println(presetAsJson);
 
-        Preset loadedPreset = new Preset();
-        loadedPreset.fromMap(presetAsMap);
-
-        System.out.println("=== PRINTING APPSETTINGS ===");
+        Preset loadedPreset;
         try {
-            System.out.println(mapper.writerWithDefaultPrettyPrinter().writeValueAsString(appSettings.toMap()));
+            loadedPreset = mapper.readValue(presetAsJson, Preset.class);
+        } catch (JsonMappingException e) {
+            throw new RuntimeException(e);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
 
+        String presetAsJson2;
+        try {
+            presetAsJson2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(loadedPreset);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        return loadedPreset.toString();
+        boolean equals = presetAsJson.equals(presetAsJson2);
+        assert(equals);
+
+        if (equals) {
+            System.out.println("Pre-serialized and post-serialized preset are identical!");
+        }
+
+
+        return preset.toString();
     }
 }
