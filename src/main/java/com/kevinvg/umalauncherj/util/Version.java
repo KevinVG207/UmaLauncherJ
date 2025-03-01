@@ -1,11 +1,13 @@
 package com.kevinvg.umalauncherj.util;
 
+import com.cronutils.utils.StringUtils;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
 @EqualsAndHashCode
-public class Version implements Comparable<Version> {
+public class Version implements Comparable<Version>{
     private int[] versionArray = {0,0,0};
 
     public Version(){}
@@ -29,5 +31,10 @@ public class Version implements Comparable<Version> {
     @Override
     public int compareTo(Version o) {
         return Arrays.compare(this.versionArray, o.versionArray);
+    }
+
+    @Override
+    public String toString() {
+        return StringUtils.join(ArrayUtils.toObject(versionArray), ".");
     }
 }
