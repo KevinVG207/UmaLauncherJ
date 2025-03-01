@@ -3,7 +3,8 @@ package com.kevinvg.umalauncherj.helpertable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kevinvg.umalauncherj.settings.AppSettings;
+import com.kevinvg.umalauncherj.settings.app.AppSettings;
+import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -15,11 +16,11 @@ public class HelperTable {
 //        mapper.registerModule(new ParanamerModule());
 //    }
 
-    private final AppSettings appSettings;
+    private final AppSettingsManager settingsManager;
 
     @Inject
-    HelperTable(AppSettings appSettings) {
-        this.appSettings = appSettings;
+    HelperTable(AppSettingsManager settingsManager) {
+        this.settingsManager = settingsManager;
     }
 
     @PostConstruct

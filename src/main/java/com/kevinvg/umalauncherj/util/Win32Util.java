@@ -46,4 +46,8 @@ public class Win32Util {
         log.info("Moving {} with params {} {} {} {}", hWnd, left, top, width, height);
         USER_32.MoveWindow(hWnd, left, top, width, height, true);
     }
+
+    public static boolean isWindow(WinDef.HWND hWnd) {
+        return USER_32.IsWindow(hWnd);
+    }
 }
