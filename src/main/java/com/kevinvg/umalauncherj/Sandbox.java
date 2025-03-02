@@ -1,11 +1,10 @@
 package com.kevinvg.umalauncherj;
 
-import com.kevinvg.umalauncherj.richpresence.ActivityFactory;
+import com.kevinvg.umalauncherj.richpresence.PresenceFactory;
 import com.kevinvg.umalauncherj.richpresence.PresenceManager;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.util.Win32Util;
 import com.sun.jna.platform.win32.User32;
-import de.jcm.discordgamesdk.user.Presence;
 import io.quarkus.runtime.Startup;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.scheduler.Scheduled;
@@ -34,7 +33,7 @@ public class Sandbox {
     @Scheduled(every = "10s")
     void saveSettings() {
         settingsManager.saveSettings();
-        presenceManager.setActivity(ActivityFactory.defaultActivity());
+        presenceManager.setPresence(PresenceFactory.defaultActivity());
     }
 
 //    @Scheduled(every = "1s")
