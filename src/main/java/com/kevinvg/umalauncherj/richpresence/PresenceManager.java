@@ -58,7 +58,7 @@ public class PresenceManager {
     }
 
     public void setActivity(Activity activity) {
-        log.info("Setting current activity to {}", activity);
+        log.info("Setting current activity to {}", activity.getDetails());
         newActivity = activity;
     }
 
@@ -86,7 +86,7 @@ public class PresenceManager {
         var tmp = currentActivity;
         currentActivity = newActivity;
 
-        log.info("Updating core with activity {}", currentActivity);
+        log.info("Updating core with activity {}", currentActivity.getDetails());
         core.activityManager().updateActivity(currentActivity);
 
         if (tmp != null) {

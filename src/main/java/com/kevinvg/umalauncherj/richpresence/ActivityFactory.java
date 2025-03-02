@@ -33,6 +33,13 @@ public class ActivityFactory {
     }
 
     public static Activity defaultActivity() {
-        return createActivity("Launching game...", "Ready your umapyois!", "umaicon", "It's Special Week!", "", "");
+        return createActivity(
+                "Launching game...",
+                "Ready your umapyois!",
+                "umaicon",
+                "It's Special Week!",
+                "",
+                ""
+        );
     }
 }

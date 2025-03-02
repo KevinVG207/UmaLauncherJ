@@ -2,10 +2,12 @@ package com.kevinvg.umalauncherj.util;
 
 import com.cronutils.utils.StringUtils;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
+@Slf4j
 @EqualsAndHashCode
 public class Version implements Comparable<Version>{
     private int[] versionArray = {0,0,0};
@@ -15,7 +17,9 @@ public class Version implements Comparable<Version>{
     public Version(String versionString){
         String[] nums = versionString.split("\\.");
         if (nums.length != 3){
-            throw new RuntimeException("Version format error " + versionString);
+            log.error("Version (string) format error: {}", versionString);
+            return;
+//            throw new RuntimeException("Version format error " + versionString);
         }
 
         this.versionArray = new int[nums.length];

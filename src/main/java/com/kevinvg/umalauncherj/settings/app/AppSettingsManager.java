@@ -3,8 +3,10 @@ package com.kevinvg.umalauncherj.settings.app;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
 import io.quarkus.runtime.Startup;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +21,13 @@ public class AppSettingsManager {
 
     private ObjectMapper mapper = new ObjectMapper();
     private ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+
+    private UmaUiManager umaUiManager;
+
+    @Inject
+    AppSettingsManager(UmaUiManager umaUiManager) {
+        this.umaUiManager = umaUiManager;
+    }
 
     @Startup
     void loadSettings() {
@@ -59,8 +68,10 @@ public class AppSettingsManager {
         try {
             writer.writeValue(settingsFile, this.settings);
             log.info("Settings saved");
+            throw new Exception("test");
         } catch (Exception e) {
             log.error("Error saving settings.", e);
+            umaUiManager.showErrorDialog(e);
             // TODO: Make an error popup!
         }
     }
