@@ -22,7 +22,7 @@ public class PresenceManager {
     }
 
     public void setPresence(DiscordRichPresence presence) {
-        log.info("Saving presence: {}", presence);
+        log.info("Queueing presence: {} {}", presence.details, presence.state);
         currentPresence = presence;
     }
 
@@ -32,7 +32,7 @@ public class PresenceManager {
             return;
         }
 
-        log.info("Updating presence: {}", currentPresence);
+        log.info("Updating presence: presence: {} {}", currentPresence.details, currentPresence.state);
         DiscordRPC.discordUpdatePresence(currentPresence);
     }
 

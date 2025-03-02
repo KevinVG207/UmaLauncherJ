@@ -23,7 +23,7 @@ public class PresenceFactory {
     public static DiscordRichPresence defaultActivity() {
         return createPresence(
                 "Launching game...",
-                String.valueOf(System.currentTimeMillis() / 1000L),
+                "Uma Launcher rich presence",
                 "umaicon",
                 "It's Special Week!",
                 "",

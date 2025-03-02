@@ -68,11 +68,8 @@ public class AppSettingsManager {
         try {
             writer.writeValue(settingsFile, this.settings);
             log.info("Settings saved");
-//            throw new Exception("test");
         } catch (Exception e) {
-            log.error("Error saving settings.", e);
-            umaUiManager.showErrorDialog(e);
-            // TODO: Make an error popup!
+            umaUiManager.showStacktraceDialog(e);
         }
     }
 
