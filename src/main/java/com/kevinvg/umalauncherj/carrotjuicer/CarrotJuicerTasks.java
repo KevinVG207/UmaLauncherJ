@@ -7,6 +7,7 @@ import com.kevinvg.umalauncherj.helpertable.HelperTable;
 import com.kevinvg.umalauncherj.mdb.MdbService;
 import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
+import com.kevinvg.umalauncherj.selenium.Horsium;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +23,13 @@ public class CarrotJuicerTasks {
 
     private HelperTable helperTable;
     private MdbService mdb;
+    private Horsium horsium;
 
     @Inject
-    CarrotJuicerTasks(HelperTable helperTable, MdbService mdb) {
+    CarrotJuicerTasks(HelperTable helperTable, MdbService mdb, Horsium horsium) {
         this.helperTable = helperTable;
         this.mdb = mdb;
+        this.horsium = horsium;
     }
 
     public void runTasks(ResponsePacket response) {
@@ -59,6 +62,9 @@ public class CarrotJuicerTasks {
         var url = GtUtil.makeHelperUrl(cardId, scenarioId, supportIds, GtLanguage.ENGLISH);
         log.info("GT URL: {}", url);
 
+        horsium.setGameToraUrl(url);
+        horsium.ensureTabOpen();
+
         this.helperTable.generateHtml();
     }
 
@@ -74,7 +80,7 @@ public class CarrotJuicerTasks {
         }
 
         if (eventIsExtraSupportCard(eventContentsInfo, response.getCharaInfo())) {
-            selectExtraSupportCard(eventContentsInfo);
+            horsium.selectExtraSupportCard(eventContentsInfo.path("support_card_id").asInt());
         }
 
         int eventId = eventData.path("event_id").asInt();
@@ -87,9 +93,8 @@ public class CarrotJuicerTasks {
             eventTitles = mdb.getEventTitles(storyId, cardId);
         }
 
-        // TODO: Implement browser control
-        // scrollToEventTitles(event_titles)
         log.info("Event Titles: {}", eventTitles);
+        horsium.scrollToEventTitles(eventTitles);
     }
 
     private boolean eventIsExtraSupportCard(JsonNode eventContentsInfo, JsonNode charaInfo) {
@@ -106,11 +111,5 @@ public class CarrotJuicerTasks {
         }
 
         return !supportIds.contains(supportCardId);
-    }
-
-    private void selectExtraSupportCard(JsonNode eventContentsInfo) {
-        String supportCardId = eventContentsInfo.path("support_card_id").asText();
-        // TODO: Implement browser
-        log.info("Selecting extra support card: {}", supportCardId);
     }
 }

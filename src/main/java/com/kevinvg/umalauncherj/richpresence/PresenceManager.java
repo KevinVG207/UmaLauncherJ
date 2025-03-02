@@ -27,7 +27,7 @@ public class PresenceManager {
         currentPresence = presence;
     }
 
-    @Scheduled(every = "10s")
+    @Scheduled(every = "10s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void updateActivity() {
         if (currentPresence == null) {
             return;
@@ -37,7 +37,7 @@ public class PresenceManager {
         DiscordRPC.discordUpdatePresence(currentPresence);
     }
 
-    @Scheduled(every = "0.5s")
+    @Scheduled(every = "0.5s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void runCallbacks() {
         DiscordRPC.discordRunCallbacks();
     }

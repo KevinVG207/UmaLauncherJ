@@ -2,6 +2,7 @@ package com.kevinvg.umalauncherj.window;
 
 import com.kevinvg.umalauncherj.util.Win32Util;
 import com.sun.jna.platform.win32.WinDef;
+import io.quarkus.runtime.Quarkus;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +16,7 @@ public class GameWindowHandler {
     private GameWindowHandler() {
     }
 
-    @Scheduled(every = "0.5s")
+    @Scheduled(every = "0.5s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void checkForGameWindow() {
         // Trying to find the game for the first time
         if (!gameWindowExists() && !hasExisted) {
@@ -31,6 +32,7 @@ public class GameWindowHandler {
 
         if (!Win32Util.isWindow(handle)) {
             gameJustClosed();
+            Quarkus.asyncExit();
             return;
         }
 

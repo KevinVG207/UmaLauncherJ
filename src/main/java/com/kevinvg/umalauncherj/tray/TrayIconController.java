@@ -1,6 +1,6 @@
 package com.kevinvg.umalauncherj.tray;
 
-import com.kevinvg.umalauncherj.util.GenericUtil;
+import com.kevinvg.umalauncherj.util.ResourcesUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.awt.*;
@@ -26,7 +26,7 @@ public class TrayIconController {
         System.out.println(new File(iconLocation).getAbsolutePath());
 
         // Image image = Toolkit.getDefaultToolkit().getImage(iconLocation);
-        Image image = GenericUtil.loadImageFromResources(iconLocation);
+        Image image = ResourcesUtil.loadImageFromResources(iconLocation);
 
         if (image == null) {
             throw new RuntimeException("Unable to load image from " + iconLocation);

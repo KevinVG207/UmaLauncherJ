@@ -17,7 +17,7 @@ import java.io.File;
 public class AppSettingsManager {
     private static final String SETTINGS_FILENAME = "umasettings.json";
 
-    private AppSettings settings = new AppSettings();
+    private AppSettings settings;
 
     private ObjectMapper mapper = new ObjectMapper();
     private ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
@@ -27,6 +27,7 @@ public class AppSettingsManager {
     @Inject
     AppSettingsManager(UmaUiManager umaUiManager) {
         this.umaUiManager = umaUiManager;
+        this.settings = new AppSettings();
     }
 
     @Startup
@@ -38,12 +39,17 @@ public class AppSettingsManager {
             return;
         }
 
-        JsonNode loadedSettingsTree;
+        JsonNode loadedSettingsTree = null;
         try {
             loadedSettingsTree = mapper.readTree(settingsFile);
         } catch (Exception e) {
             // Log the error
             log.error("Error reading settings into tree.", e);
+            return;
+        }
+
+        if (loadedSettingsTree == null || loadedSettingsTree.isNull() || loadedSettingsTree.isMissingNode()) {
+            log.error("Error reading settings into tree.");
             return;
         }
 
@@ -55,6 +61,14 @@ public class AppSettingsManager {
         } catch (IllegalArgumentException e) {
             log.error("Error converting settings tree to AppSettings", e);
             return;
+        }
+
+        var loadedSettingsMap = loadedSettings.getSettings();
+        var curSettingsMap = this.settings.getSettings();
+        for (var key : curSettingsMap.keySet()) {
+            if (!loadedSettingsMap.containsKey(key)){
+                loadedSettingsMap.put(key, curSettingsMap.get(key));
+            }
         }
 
         this.settings = loadedSettings;
@@ -74,7 +88,7 @@ public class AppSettingsManager {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> T getSetting(AppSettings.SettingKey key) {
+    public <T> T getSetting(AppSettings.SettingKey key) {
         Object value = this.settings.getValue(key);
 
         if (value == null) {

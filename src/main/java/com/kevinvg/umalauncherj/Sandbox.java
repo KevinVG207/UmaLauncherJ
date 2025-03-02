@@ -13,6 +13,8 @@ import jakarta.enterprise.event.Observes;
 import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.geom.Rectangle2D;
+
 @Slf4j
 @ApplicationScoped
 public class Sandbox {
@@ -30,13 +32,13 @@ public class Sandbox {
         log.info("Sandbox started");
     }
 
-    @Scheduled(every = "10s")
+    @Scheduled(every = "10s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void saveSettings() {
         settingsManager.saveSettings();
         presenceManager.setPresence(PresenceFactory.defaultActivity());
     }
 
-//    @Scheduled(every = "1s")
+//    @Scheduled(every = "1s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void moveWindow() {
         var gameHandle = Win32Util.getGameHandle();
 
@@ -44,14 +46,11 @@ public class Sandbox {
             return;
         }
 
-        User32 user32 = User32.INSTANCE;
+        var rect = Win32Util.getWindowRect(gameHandle).toRectangle();
 
-        var rect = Win32Util.getWindowRect(gameHandle);
+        rect.x += 200;
 
-        rect.left += 200;
-        rect.right += 200;
-
-        System.out.println("Moving window");
-        Win32Util.moveWindow(gameHandle, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+        log.info("Moving window");
+        Win32Util.moveWindow(gameHandle, (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
     }
 }

@@ -40,19 +40,13 @@ public class CarrotJuicer {
         this.ui = ui;
     }
 
-    @Scheduled(every="0.5s")
+    @Scheduled(every="0.5s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void processPackets() {
         log.info("Processing packets");
         var newPacketNames = getNewPacketNames();
 
         for (var path : newPacketNames) {
-            try {
-                this.processPacket(path);
-            } catch (Exception e) {
-                // FIXME: Catching everything blech
-                log.error("Error processing packet " + path);
-                ui.showStacktraceDialog(e);
-            }
+            this.processPacket(path);
         }
 
     }
@@ -79,12 +73,18 @@ public class CarrotJuicer {
             return;
         }
 
-        if (packetName.endsWith("R.msgpack")) {
-            this.processResponse(packetPath);
-        } else if (packetName.endsWith("Q.msgpack")) {
-            this.processRequest(packetPath);
-        } else {
-            System.out.println("Packet name not valid: " + packetName);
+        try {
+            if (packetName.endsWith("R.msgpack")) {
+                this.processResponse(packetPath);
+            } else if (packetName.endsWith("Q.msgpack")) {
+                this.processRequest(packetPath);
+            } else {
+                System.out.println("Packet name not valid: " + packetName);
+            }
+        } catch (Exception e) {
+            // FIXME: Catching everything blech
+            log.error("Error processing packet " + packetName);
+            ui.showStacktraceDialog(e);
         }
 
         try {
