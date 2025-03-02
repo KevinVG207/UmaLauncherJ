@@ -1,0 +1,1 @@
+.\mvnw clean package "-Dquarkus.package.jar.type=uber-jar"

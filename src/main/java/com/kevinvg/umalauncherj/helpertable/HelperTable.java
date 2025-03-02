@@ -40,7 +40,7 @@ public class HelperTable {
             throw new RuntimeException(e);
         }
 
-        System.out.println(presetAsJson);
+//        System.out.println(presetAsJson);
 
         Preset loadedPreset;
         try {

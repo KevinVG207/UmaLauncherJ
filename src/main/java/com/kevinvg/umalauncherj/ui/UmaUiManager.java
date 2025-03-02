@@ -17,7 +17,7 @@ public class UmaUiManager {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 
-    public void showStacktraceDialog(String message) {
+    private void showStacktraceDialog(String message) {
         SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE));
     }
 

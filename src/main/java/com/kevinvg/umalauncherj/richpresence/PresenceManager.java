@@ -19,6 +19,7 @@ public class PresenceManager {
     @Startup
     void setup() {
         DiscordRPC.discordInitialize(APP_ID, new DiscordEventHandlers.Builder().setReadyEventHandler(user -> log.info("Discord RPC ready")).build(), true);
+        currentPresence = PresenceFactory.defaultActivity();
     }
 
     public void setPresence(DiscordRichPresence presence) {

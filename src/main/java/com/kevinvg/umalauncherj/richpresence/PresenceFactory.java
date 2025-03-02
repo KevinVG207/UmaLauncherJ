@@ -1,11 +1,7 @@
 package com.kevinvg.umalauncherj.richpresence;
 
-import jakarta.inject.Singleton;
 import net.arikia.dev.drpc.DiscordRichPresence;
 
-import java.time.Instant;
-
-@Singleton
 public class PresenceFactory {
     private static final long startTime = System.currentTimeMillis() / 1000L;
 

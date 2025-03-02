@@ -1,20 +1,24 @@
 package com.kevinvg.umalauncherj.carrotjuicer;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
 import com.kevinvg.umalauncherj.util.MsgPackHandler;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
+@Slf4j
 @Singleton
 public class CarrotJuicer {
     private static final Path messagesFolder;
@@ -22,19 +26,23 @@ public class CarrotJuicer {
         messagesFolder = FileUtil.getGameFolder().resolve("CarrotJuicer");
     }
 
-    private final CarrotJuicerTasks carrotJuicerTasks;
+    private final List<Path> ignoredPacketPaths = new ArrayList<>();
 
-    CarrotJuicerTasks tasks;
+    private final CarrotJuicerTasks carrotJuicerTasks;
+    private final CarrotJuicerTasks tasks;
+    private final UmaUiManager ui;
+
 
     @Inject
-    CarrotJuicer(CarrotJuicerTasks tasks, CarrotJuicerTasks carrotJuicerTasks) {
+    CarrotJuicer(CarrotJuicerTasks tasks, CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui) {
         this.tasks = tasks;
         this.carrotJuicerTasks = carrotJuicerTasks;
+        this.ui = ui;
     }
 
     @Scheduled(every="0.5s")
     void processPackets() {
-        System.out.println("Processing packets");
+        log.info("Processing packets");
         var newPacketNames = getNewPacketNames();
 
         for (var path : newPacketNames) {
@@ -42,9 +50,8 @@ public class CarrotJuicer {
                 this.processPacket(path);
             } catch (Exception e) {
                 // FIXME: Catching everything blech
-                System.out.println("Error processing packet " + path);
-                System.out.println(e.getMessage());
-                e.printStackTrace();
+                log.error("Error processing packet " + path);
+                ui.showStacktraceDialog(e);
             }
         }
 
@@ -68,6 +75,10 @@ public class CarrotJuicer {
     void processPacket(String packetName) {
         Path packetPath = messagesFolder.resolve(packetName);
 
+        if (this.ignoredPacketPaths.contains(packetPath)) {
+            return;
+        }
+
         if (packetName.endsWith("R.msgpack")) {
             this.processResponse(packetPath);
         } else if (packetName.endsWith("Q.msgpack")) {
@@ -75,6 +86,15 @@ public class CarrotJuicer {
         } else {
             System.out.println("Packet name not valid: " + packetName);
         }
+
+        try {
+            Files.deleteIfExists(packetPath);
+        } catch (Exception e) {
+            log.warn("Error deleting packet {}", packetName);
+            this.ignoredPacketPaths.add(packetPath);
+            new File(packetPath.toString()).deleteOnExit();  // Attempt to delete it later
+        }
+
     }
 
     void processResponse(Path packetPath) {
