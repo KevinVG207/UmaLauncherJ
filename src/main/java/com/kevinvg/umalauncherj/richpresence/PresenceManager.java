@@ -27,7 +27,7 @@ public class PresenceManager {
         currentPresence = presence;
     }
 
-    @Scheduled(every = "10s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    @Scheduled(every = "10s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void updateActivity() {
         if (currentPresence == null) {
             return;

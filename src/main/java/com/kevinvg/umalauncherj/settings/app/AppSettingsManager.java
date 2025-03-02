@@ -22,11 +22,11 @@ public class AppSettingsManager {
     private ObjectMapper mapper = new ObjectMapper();
     private ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
 
-    private UmaUiManager umaUiManager;
+    private UmaUiManager ui;
 
     @Inject
-    AppSettingsManager(UmaUiManager umaUiManager) {
-        this.umaUiManager = umaUiManager;
+    AppSettingsManager(UmaUiManager ui) {
+        this.ui = ui;
         this.settings = new AppSettings();
     }
 
@@ -83,12 +83,12 @@ public class AppSettingsManager {
             writer.writeValue(settingsFile, this.settings);
             log.info("Settings saved");
         } catch (Exception e) {
-            umaUiManager.showStacktraceDialog(e);
+            ui.showStacktraceDialog(e);
         }
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getSetting(AppSettings.SettingKey key) {
+    public <T> T get(AppSettings.SettingKey key) {
         Object value = this.settings.getValue(key);
 
         if (value == null) {
@@ -105,6 +105,18 @@ public class AppSettingsManager {
         }
 
         return result;
+    }
+
+    public void set(AppSettings.SettingKey key, Object value) {
+        log.info("Setting {} to {}", key, value);
+        try {
+            this.settings.setValue(key, value);
+        } catch (Exception e) {
+            ui.showStacktraceDialog(e);
+            return;
+        }
+
+        saveSettings();
     }
 
     private static File getSettingsFile() {

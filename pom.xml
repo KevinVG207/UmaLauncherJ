@@ -108,6 +108,10 @@
             <artifactId>selenium-java</artifactId>
             <version>4.29.0</version>
         </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-jackson</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

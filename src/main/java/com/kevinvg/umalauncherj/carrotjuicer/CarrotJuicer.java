@@ -40,7 +40,7 @@ public class CarrotJuicer {
         this.ui = ui;
     }
 
-    @Scheduled(every="0.5s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    @Scheduled(every="0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void processPackets() {
         log.info("Processing packets");
         var newPacketNames = getNewPacketNames();

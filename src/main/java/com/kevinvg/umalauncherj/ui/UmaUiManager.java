@@ -18,12 +18,16 @@ public class UmaUiManager {
     }
 
     private void showStacktraceDialog(String message) {
-        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE));
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, "Uma Launcher Error", JOptionPane.ERROR_MESSAGE));
     }
 
     public void showStacktraceDialog(Exception exception) {
         StringWriter sw = new StringWriter();
         exception.printStackTrace(new PrintWriter(sw));
         this.showStacktraceDialog(sw.toString());
+    }
+
+    public void showErrorDialog(String message) {
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, "Uma Launcher Error", JOptionPane.ERROR_MESSAGE));
     }
 }

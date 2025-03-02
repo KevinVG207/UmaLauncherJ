@@ -2,70 +2,67 @@ package com.kevinvg.umalauncherj.selenium;
 
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
-import com.sun.jna.platform.win32.WinDef;
+import com.kevinvg.umalauncherj.util.Rect;
+import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import io.quarkus.runtime.Shutdown;
-import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import jakarta.interceptor.AroundInvoke;
-import jakarta.interceptor.Interceptor;
-import jakarta.interceptor.InterceptorBinding;
-import jakarta.interceptor.InvocationContext;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.*;
 
-import java.awt.*;
-import java.lang.annotation.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Singleton
 public class Horsium {
     private final AppSettingsManager settings;
+    private final UmaUiManager ui;
     private final List<WebDriver> drivers = new ArrayList<>();
     private WebDriver driver;
     private String activeHandle = "";
-    private Rectangle rect = new Rectangle();
     @Setter
     private String gameToraUrl = "";
 
     @Inject
-    Horsium(AppSettingsManager settings) {
+    Horsium(AppSettingsManager settings, UmaUiManager ui) {
         this.settings = settings;
-    }
-
-    public WebDriver setupFirefox() {
-        var service = GeckoDriverService.createDefaultService();
-        var profile = new FirefoxProfile(ProfileManager.firefoxProfileFile);
-        var options = new FirefoxOptions();
-        options.setProfile(profile);
-
-        if (settings.getSetting(AppSettings.SettingKey.ENABLE_BROWSER_OVERRIDE)) {
-            String driverPath = settings.getSetting(AppSettings.SettingKey.BROWSER_CUSTOM_DRIVER);
-            if (driverPath != null && !driverPath.isEmpty()) {
-                service.setExecutable(driverPath);
-            }
-
-            String binaryPath = settings.getSetting(AppSettings.SettingKey.BROWSER_CUSTOM_BINARY);
-            if (binaryPath != null && !binaryPath.isEmpty()) {
-                options.setBinary(binaryPath);
-            }
-        }
-
-        log.info("Firefox driver path: {}", service.getExecutable());
-        log.info("Firefox binary path: {}", options.getBinary());
-
-        return new FirefoxDriver(service, options);
+        this.ui = ui;
     }
 
     public void setupBrowser() {
-        var newDriver = setupFirefox();
+        String selectedBrowser = settings.<String>get(AppSettings.SettingKey.SELECTED_BROWSER).toUpperCase();
+        List<BrowserType> attemptList = new ArrayList<>();
+
+        try {
+            attemptList.add(BrowserType.valueOf(selectedBrowser));
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid browser selected: {}", selectedBrowser);
+            selectedBrowser = "AUTO";
+            settings.set(AppSettings.SettingKey.SELECTED_BROWSER, selectedBrowser);
+        }
+
+        if (selectedBrowser.equals("AUTO")) {
+            attemptList.addAll(Arrays.asList(BrowserType.values()));
+        }
+
+        WebDriver newDriver = null;
+        for (BrowserType browserType : attemptList) {
+            try {
+                newDriver = browserType.driverClass.getConstructor().newInstance().setup(settings);
+                break;
+            } catch (Exception e) {
+            }
+        }
+
+        if (newDriver == null) {
+            ui.showErrorDialog("Unable to start any browser.<br>Make sure you have one of the supported browsers installed<br>or set a webdriver and binary path in the preferences.");
+            return;
+        }
+
         drivers.add(newDriver);
         this.driver = newDriver;
         newDriver.get(gameToraUrl);
@@ -74,6 +71,9 @@ public class Horsium {
     }
 
     public Object executeScript(String script, Object... args) {
+        if (!driverIsAlive()) {
+            return null;
+        }
         if (!(driver instanceof JavascriptExecutor executor)) {
             log.error("Browser driver is not JavascriptExecutor!");
             return null;
@@ -90,6 +90,10 @@ public class Horsium {
     public void ensureTabOpen() {
         if (!driverIsAlive()) {
             setupBrowser();
+            if (!driverIsAlive()) {
+                // Failed to start.
+                return;
+            }
         }
 
         driver.switchTo().window(activeHandle);
@@ -117,6 +121,14 @@ public class Horsium {
     }
 
     private void setupGameToraPage() {
+        var rect = settings.<Rect>get(AppSettings.SettingKey.BROWSER_POSITION);
+
+        if (rect != null) {
+            driver.manage().window().setPosition(new org.openqa.selenium.Point(rect.getX(), rect.getY()));
+            driver.manage().window().setSize(new org.openqa.selenium.Dimension(rect.getWidth(), rect.getHeight()));
+        }
+
+
         executeScript("window.from_script = true;");
 
         // Setup window position requests
@@ -128,7 +140,7 @@ public class Horsium {
                         'width': window.outerWidth,
                         'height': window.outerHeight
                     };
-                    fetch('http://127.0.0.1:3150/skills-window-rect', { method: 'POST', body: JSON.stringify(rect), headers: { 'Content-Type': 'text/plain' } });
+                    fetch('http://127.0.0.1:3150/helper-window-rect', { method: 'POST', body: JSON.stringify(rect), headers: { 'Content-Type': 'application/json' } });
                     setTimeout(window.send_screen_rect, 2000);
                 }
                 setTimeout(window.send_screen_rect, 2000);""");
@@ -145,7 +157,7 @@ public class Horsium {
 
         boolean darkEnabled = executeBooleanScript("""
                 return document.querySelector("[class^='tooltips_tooltip_']").querySelector("[class^='filters_toggle_button_']").childNodes[0].querySelector("input").checked;""");
-        if (darkEnabled != settings.<Boolean>getSetting(AppSettings.SettingKey.GAMETORA_DARK_MODE)) {
+        if (darkEnabled != settings.<Boolean>get(AppSettings.SettingKey.GAMETORA_DARK_MODE)) {
             executeScript("""
                     document.querySelector("[class^='tooltips_tooltip_']").querySelector("[class^='filters_toggle_button_']").childNodes[0].querySelector("input").click()""");
         }
@@ -198,6 +210,11 @@ public class Horsium {
                     arguments[0].click();
                     window.scrollBy({top: arguments[0].getBoundingClientRect().bottom - window.innerHeight + 32, left: 0, behavior: 'smooth'});
                 }""", eventElement);
+    }
+
+    public void closeEventResultPopups() {
+        executeScript("""
+                document.querySelectorAll("[class^='compatibility_viewer_item_'][aria-expanded=true]").forEach(e => e.click());""");
     }
 
     @SuppressWarnings("unchecked")

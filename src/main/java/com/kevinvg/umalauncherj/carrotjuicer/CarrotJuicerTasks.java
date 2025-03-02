@@ -33,6 +33,8 @@ public class CarrotJuicerTasks {
     }
 
     public void runTasks(ResponsePacket response) {
+        horsium.closeEventResultPopups();
+
         if (!response.getCharaInfo().isMissingNode()) {
             this.trainingRunTask(response);
         }

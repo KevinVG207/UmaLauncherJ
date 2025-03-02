@@ -16,7 +16,7 @@ public class GameWindowHandler {
     private GameWindowHandler() {
     }
 
-    @Scheduled(every = "0.5s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    @Scheduled(every = "0.5s",executionMaxDelay = "500ms",  concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void checkForGameWindow() {
         // Trying to find the game for the first time
         if (!gameWindowExists() && !hasExisted) {

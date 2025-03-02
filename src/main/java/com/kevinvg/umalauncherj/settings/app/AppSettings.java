@@ -2,9 +2,7 @@ package com.kevinvg.umalauncherj.settings.app;
 
 import com.kevinvg.umalauncherj.helpertable.Preset;
 import com.kevinvg.umalauncherj.settings.Settings;
-import com.kevinvg.umalauncherj.settings.types.BoolSetting;
-import com.kevinvg.umalauncherj.settings.types.ListSetting;
-import com.kevinvg.umalauncherj.settings.types.StringSetting;
+import com.kevinvg.umalauncherj.settings.types.*;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -19,6 +17,19 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
     public AppSettings() {
         this.settings.put(SettingKey.VERSION,
                 new StringSetting(version != null ? version : "0.0.0", "Version", "Version", true));
+        this.settings.put(SettingKey.SELECTED_BROWSER,
+                new ComboBoxSetting(
+                        "Auto",
+                        "Show support bonds",
+                        "Choose how to display support bonds.",
+                        List.of("Auto", "Firefox", "Chrome", "Edge")
+                ));
+        this.settings.put(SettingKey.BROWSER_POSITION,
+                new RectSetting(
+                        null,
+                        "Browser position",
+                        "Position of the browser window."
+                ));
         this.settings.put(SettingKey.TRAINING_HELPER_TABLE_PRESET_LIST,
                 new ListSetting<>(
                         List.of(new Preset()),
@@ -54,6 +65,8 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
 
     public enum SettingKey {
         VERSION,
+        SELECTED_BROWSER,
+        BROWSER_POSITION,
         TRAINING_HELPER_TABLE_PRESET_LIST,
         GAMETORA_DARK_MODE,
         ENABLE_BROWSER_OVERRIDE,

@@ -32,7 +32,7 @@ public class Sandbox {
         log.info("Sandbox started");
     }
 
-    @Scheduled(every = "10s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
+    @Scheduled(every = "10s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void saveSettings() {
         settingsManager.saveSettings();
         presenceManager.setPresence(PresenceFactory.defaultActivity());
