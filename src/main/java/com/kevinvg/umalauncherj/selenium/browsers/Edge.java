@@ -6,20 +6,25 @@ import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chromium.ChromiumOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
-import org.openqa.selenium.firefox.FirefoxProfile;
-import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeDriverService;
+import org.openqa.selenium.edge.EdgeOptions;
 
 @Slf4j
-public class Firefox extends Browser {
+public class Edge extends Browser {
     @Override
     protected WebDriver setup(AppSettingsManager settings, String url) {
-        var service = GeckoDriverService.createDefaultService();
-        var profile = new FirefoxProfile(ProfileManager.firefoxProfileFile);
-        var options = new FirefoxOptions();
-        options.setProfile(profile);
+        var service = EdgeDriverService.createDefaultService();
+        var options = new EdgeOptions();
+        options.addArguments(
+                "--user-data-dir=" + ProfileManager.chromeProfileFile.toPath(),
+                "--remote-debugging-port=9222",
+                "--new-window",
+                "-app=" + url
+        );
 
         if (settings.get(AppSettings.SettingKey.ENABLE_BROWSER_OVERRIDE)) {
             String driverPath = settings.get(AppSettings.SettingKey.BROWSER_CUSTOM_DRIVER);
@@ -33,9 +38,8 @@ public class Firefox extends Browser {
             }
         }
 
-        log.info("Firefox driver path: {}", service.getExecutable());
-        log.info("Firefox binary path: {}", options.getBinary());
+        log.info("Edge driver path: {}", service.getExecutable());
 
-        return new FirefoxDriver(service, options);
+        return new EdgeDriver(service, options);
     }
 }

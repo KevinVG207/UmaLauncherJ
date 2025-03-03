@@ -107,6 +107,10 @@ public class AppSettingsManager {
         return result;
     }
 
+    public Object get2(AppSettings.SettingKey key) {
+        return this.settings.getValue2(key);
+    }
+
     public void set(AppSettings.SettingKey key, Object value) {
         log.info("Setting {} to {}", key, value);
         try {

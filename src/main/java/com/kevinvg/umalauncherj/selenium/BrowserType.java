@@ -1,10 +1,13 @@
 package com.kevinvg.umalauncherj.selenium;
 
+import com.kevinvg.umalauncherj.selenium.browsers.Chrome;
+import com.kevinvg.umalauncherj.selenium.browsers.Edge;
 import com.kevinvg.umalauncherj.selenium.browsers.Firefox;
-import org.openqa.selenium.WebDriver;
 
 public enum BrowserType {
-    FIREFOX(Firefox.class);
+    FIREFOX(Firefox.class),
+    CHROME(Chrome.class),
+    EDGE(Edge.class),;
 
     public final Class<? extends Browser> driverClass;
 

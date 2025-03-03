@@ -52,7 +52,7 @@ public class Horsium {
         WebDriver newDriver = null;
         for (BrowserType browserType : attemptList) {
             try {
-                newDriver = browserType.driverClass.getConstructor().newInstance().setup(settings);
+                newDriver = browserType.driverClass.getConstructor().newInstance().setup(settings, gameToraUrl);
                 break;
             } catch (Exception e) {
             }
@@ -121,7 +121,7 @@ public class Horsium {
     }
 
     private void setupGameToraPage() {
-        var rect = settings.<Rect>get(AppSettings.SettingKey.BROWSER_POSITION);
+        var rect = (Rect) settings.get2(AppSettings.SettingKey.BROWSER_POSITION);
 
         if (rect != null) {
             driver.manage().window().setPosition(new org.openqa.selenium.Point(rect.getX(), rect.getY()));

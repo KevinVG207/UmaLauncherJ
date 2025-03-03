@@ -64,6 +64,6 @@ public class FileUtil {
     }
 
     public static File getAppDataFile(String path) {
-        return new File(getAppDataPath().resolve(path).toString());
+        return new File(getAppDataPath().resolve(path).toAbsolutePath().toString());
     }
 }

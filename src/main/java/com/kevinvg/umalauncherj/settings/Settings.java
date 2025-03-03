@@ -15,6 +15,10 @@ public abstract class Settings<T extends Enum<?>> {
         return settings.get(key).getValue();
     }
 
+    public Object getValue2(final T key) {
+        return settings.get(key).getValue2();
+    }
+
     public void setValue(final T key, final Object value) {
         settings.get(key).setValue(value);
     }

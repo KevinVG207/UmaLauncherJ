@@ -2,6 +2,7 @@ package com.kevinvg.umalauncherj.settings;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -53,6 +54,11 @@ public abstract class Setting<T> {
     protected boolean _setValue(T value) {
         this.value = value;
         return true;
+    }
+
+    @JsonIgnore
+    public Object getValue2() {
+        return value;
     }
 
 }

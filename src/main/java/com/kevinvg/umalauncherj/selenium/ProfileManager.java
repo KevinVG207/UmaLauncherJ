@@ -12,6 +12,8 @@ import java.util.List;
 public class ProfileManager {
     private static final List<String> firefoxProfileFiles = List.of("FirefoxProfile/prefs.js", "FirefoxProfile/chrome/userChrome.css");
     public static final File firefoxProfileFile = FileUtil.getAppDataFile("FirefoxProfile");
+    public static final File chromeProfileFile = FileUtil.getAppDataFile("ChromeProfile");
+    public static final File edgeProfileFile = FileUtil.getAppDataFile("EdgeProfile");
 
     @Startup
     void init() {
