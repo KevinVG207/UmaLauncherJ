@@ -11,6 +11,8 @@ import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 @Slf4j
 @Singleton
@@ -67,11 +69,11 @@ public class AppSettingsManager {
         var curSettingsMap = this.settings.getSettings();
         for (var key : curSettingsMap.keySet()) {
             if (!loadedSettingsMap.containsKey(key)){
-                loadedSettingsMap.put(key, curSettingsMap.get(key));
+                log.info("Key {} not found in previous settings.", key);
+                continue;
             }
+            curSettingsMap.get(key).setValue(loadedSettingsMap.get(key).getValue());
         }
-
-        this.settings = loadedSettings;
 
         log.info("Settings loaded");
     }
@@ -79,8 +81,10 @@ public class AppSettingsManager {
     public void saveSettings() {
         log.info("Saving settings");
         var settingsFile = getSettingsFile();
+        var tmpSettingsFile = new File(settingsFile + ".tmp");
         try {
-            writer.writeValue(settingsFile, this.settings);
+            writer.writeValue(tmpSettingsFile, this.settings);
+            Files.copy(tmpSettingsFile.toPath(), settingsFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             log.info("Settings saved");
         } catch (Exception e) {
             ui.showStacktraceDialog(e);
@@ -105,10 +109,6 @@ public class AppSettingsManager {
         }
 
         return result;
-    }
-
-    public Object get2(AppSettings.SettingKey key) {
-        return this.settings.getValue2(key);
     }
 
     public void set(AppSettings.SettingKey key, Object value) {

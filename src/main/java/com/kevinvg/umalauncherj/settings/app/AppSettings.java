@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.ConfigProvider;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -31,7 +32,7 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Position of the browser window."
                 ));
         this.settings.put(SettingKey.TRAINING_HELPER_TABLE_PRESET_LIST,
-                new ListSetting<>(
+                new ListSetting(
                         List.of(new Preset()),
                         "Training helper table preset list",
                         "List of presets for the automatic training event helper.",

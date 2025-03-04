@@ -12,14 +12,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(Integer value, String name, String description) {
-        super(value, name, description);
+        super(value, Integer.class, name, description);
     }
 
     public IntegerSetting(Integer value, String name, String description, boolean hidden) {
-        super(value, name, description, hidden);
+        super(value, Integer.class, name, description, hidden);
     }
 
     public IntegerSetting(Integer value, String name, String description, boolean hidden, String tab) {
-        super(value, name, description, hidden, tab);
+        super(value, Integer.class, name, description, hidden, tab);
     }
 }

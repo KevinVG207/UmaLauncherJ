@@ -8,14 +8,14 @@ import lombok.*;
 @AllArgsConstructor
 public class BoolSetting extends Setting<Boolean> {
     public BoolSetting(Boolean value, String name, String description) {
-        super(value, name, description);
+        super(value, Boolean.class, name, description);
     }
 
     public BoolSetting(Boolean value, String name, String description, boolean hidden) {
-        super(value, name, description, hidden);
+        super(value, Boolean.class, name, description, hidden);
     }
 
     public BoolSetting(Boolean value, String name, String description, boolean hidden, String tab) {
-        super(value, name, description, hidden, tab);
+        super(value, Boolean.class, name, description, hidden, tab);
     }
 }

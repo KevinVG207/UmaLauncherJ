@@ -41,11 +41,11 @@ public class Horsium {
             attemptList.add(BrowserType.valueOf(selectedBrowser));
         } catch (IllegalArgumentException e) {
             log.error("Invalid browser selected: {}", selectedBrowser);
-            selectedBrowser = "AUTO";
+            selectedBrowser = "Auto";
             settings.set(AppSettings.SettingKey.SELECTED_BROWSER, selectedBrowser);
         }
 
-        if (selectedBrowser.equals("AUTO")) {
+        if (selectedBrowser.equals("Auto")) {
             attemptList.addAll(Arrays.asList(BrowserType.values()));
         }
 
@@ -121,7 +121,7 @@ public class Horsium {
     }
 
     private void setupGameToraPage() {
-        var rect = (Rect) settings.get2(AppSettings.SettingKey.BROWSER_POSITION);
+        Rect rect = settings.get(AppSettings.SettingKey.BROWSER_POSITION);
 
         if (rect != null) {
             driver.manage().window().setPosition(new org.openqa.selenium.Point(rect.getX(), rect.getY()));
