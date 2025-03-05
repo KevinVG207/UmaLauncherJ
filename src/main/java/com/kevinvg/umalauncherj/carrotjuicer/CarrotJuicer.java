@@ -31,13 +31,11 @@ public class CarrotJuicer {
     private final List<Path> ignoredPacketPaths = new ArrayList<>();
 
     private final CarrotJuicerTasks carrotJuicerTasks;
-    private final CarrotJuicerTasks tasks;
     private final UmaUiManager ui;
 
 
     @Inject
-    CarrotJuicer(CarrotJuicerTasks tasks, CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui) {
-        this.tasks = tasks;
+    CarrotJuicer(CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui) {
         this.carrotJuicerTasks = carrotJuicerTasks;
         this.ui = ui;
     }
