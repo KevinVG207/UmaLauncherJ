@@ -8,11 +8,11 @@ import com.kevinvg.umalauncherj.mdb.MdbService;
 import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import com.kevinvg.umalauncherj.selenium.Horsium;
+import com.kevinvg.umalauncherj.selenium.instances.GtEventHelper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -23,17 +23,17 @@ public class CarrotJuicerTasks {
 
     private HelperTable helperTable;
     private MdbService mdb;
-    private Horsium horsium;
+    private GtEventHelper gtEventHelper;
 
     @Inject
-    CarrotJuicerTasks(HelperTable helperTable, MdbService mdb, Horsium horsium) {
+    CarrotJuicerTasks(HelperTable helperTable, MdbService mdb, GtEventHelper gtEventHelper) {
         this.helperTable = helperTable;
         this.mdb = mdb;
-        this.horsium = horsium;
+        this.gtEventHelper = gtEventHelper;
     }
 
     public void runTasks(ResponsePacket response) {
-        horsium.closeEventResultPopups();
+        gtEventHelper.closeEventResultPopups();
 
         if (!response.getCharaInfo().isMissingNode()) {
             this.trainingRunTask(response);
@@ -64,8 +64,8 @@ public class CarrotJuicerTasks {
         var url = GtUtil.makeHelperUrl(cardId, scenarioId, supportIds, GtLanguage.ENGLISH);
         log.info("GT URL: {}", url);
 
-        horsium.setGameToraUrl(url);
-        horsium.ensureTabOpen();
+        gtEventHelper.setUrl(url);
+        gtEventHelper.ensureTabOpen();
 
         this.helperTable.generateHtml();
     }
@@ -76,13 +76,13 @@ public class CarrotJuicerTasks {
         var eventContentsInfo = eventData.path("event_contents_info");
 
         var choiceArray = eventContentsInfo.path("choice_array");
-        if (choiceArray.isMissingNode()){
+        if (choiceArray.isMissingNode() || choiceArray.isEmpty()) {
             log.info("Event does not have choices");
             return;
         }
 
         if (eventIsExtraSupportCard(eventContentsInfo, response.getCharaInfo())) {
-            horsium.selectExtraSupportCard(eventContentsInfo.path("support_card_id").asInt());
+            gtEventHelper.selectExtraSupportCard(eventContentsInfo.path("support_card_id").asInt());
         }
 
         int eventId = eventData.path("event_id").asInt();
@@ -96,7 +96,7 @@ public class CarrotJuicerTasks {
         }
 
         log.info("Event Titles: {}", eventTitles);
-        horsium.scrollToEventTitles(eventTitles);
+        gtEventHelper.scrollToEventTitles(eventTitles);
     }
 
     private boolean eventIsExtraSupportCard(JsonNode eventContentsInfo, JsonNode charaInfo) {

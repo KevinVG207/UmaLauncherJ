@@ -21,6 +21,8 @@ import java.util.stream.Stream;
 @Slf4j
 @Singleton
 public class CarrotJuicer {
+    private static final long START_MILLIS = System.currentTimeMillis();
+    private boolean checkForTimestamps = true;
     private static final Path messagesFolder;
     static {
         messagesFolder = FileUtil.getGameFolder().resolve("CarrotJuicer");
@@ -49,6 +51,9 @@ public class CarrotJuicer {
             this.processPacket(path);
         }
 
+        if (checkForTimestamps) {
+            checkForTimestamps = false;
+        }
     }
 
     List<String> getNewPacketNames() {
@@ -74,27 +79,46 @@ public class CarrotJuicer {
         }
 
         try {
-            if (packetName.endsWith("R.msgpack")) {
-                this.processResponse(packetPath);
-            } else if (packetName.endsWith("Q.msgpack")) {
-                this.processRequest(packetPath);
+            if (packetName.endsWith(".msgpack")) {
+                if (checkForTimestamps) {
+                    String timestampString = packetName.substring(0, packetName.length() - 9);
+                    log.info("Timestamp: {}", timestampString);
+
+                    try {
+                        long timestamp = Long.parseLong(timestampString);
+
+                        if (timestamp < START_MILLIS) {
+                            // Ignore any packets before UL start.
+                            return;
+                        }
+                    } catch (NumberFormatException e) {
+                        log.warn("Error parsing timestamp: {}", timestampString);
+                        return;
+                    }
+                }
+
+                if (packetName.endsWith("R.msgpack")) {
+                    this.processResponse(packetPath);
+                } else if (packetName.endsWith("Q.msgpack")) {
+                    this.processRequest(packetPath);
+                }
             } else {
                 System.out.println("Packet name not valid: " + packetName);
             }
         } catch (Exception e) {
             // FIXME: Catching everything blech
             log.error("Error processing packet " + packetName);
+            e.printStackTrace();
             ui.showStacktraceDialog(e);
+        } finally {
+            try {
+                Files.deleteIfExists(packetPath);
+            } catch (Exception e) {
+                log.warn("Error deleting packet {}", packetName);
+                this.ignoredPacketPaths.add(packetPath);
+                new File(packetPath.toString()).deleteOnExit();  // Attempt to delete it later
+            }
         }
-
-        try {
-            Files.deleteIfExists(packetPath);
-        } catch (Exception e) {
-            log.warn("Error deleting packet {}", packetName);
-            this.ignoredPacketPaths.add(packetPath);
-            new File(packetPath.toString()).deleteOnExit();  // Attempt to delete it later
-        }
-
     }
 
     void processResponse(Path packetPath) {

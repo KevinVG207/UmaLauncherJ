@@ -11,11 +11,11 @@ public class ResponsePacket {
     }
 
     public JsonNode getCharaInfo() {
-        return data.path("chara_info");
+        return getSingleModeKey("chara_info");
     }
 
     public JsonNode getTrainingEvent() {
-        var eventArray = data.path("unchecked_event_array");
+        var eventArray = getSingleModeKey("unchecked_event_array");
         if (eventArray.isMissingNode() || !eventArray.isArray()) {
             return MissingNode.getInstance();
         }
@@ -26,5 +26,15 @@ public class ResponsePacket {
         }
 
         return eventData;
+    }
+
+    private JsonNode getSingleModeKey(String key) {
+        var singleModeLoadCommon = data.path("single_mode_load_common");
+
+        if (singleModeLoadCommon.isMissingNode()) {
+            return data.path(key);
+        }
+
+        return singleModeLoadCommon.get(key);
     }
 }
