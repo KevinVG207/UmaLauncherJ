@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.kevinvg.umalauncherj.settings.Setting;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
+import io.quarkus.runtime.Shutdown;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -144,5 +145,10 @@ public class AppSettingsManager {
 
             currentSettingsMap.get(key).setValue(newValue);
         }
+    }
+
+    @Shutdown(0)
+    void shutdown() {
+        saveSettings();
     }
 }

@@ -19,6 +19,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
     public AppSettings() {
         this.settings.put(SettingKey.VERSION,
                 new StringSetting(version != null ? version : "0.0.0", "Version", "Version", true));
+        this.settings.put(SettingKey.ENABLE_LAUNCH_GAME,
+                new BoolSetting(
+                        true,
+                        "Auto-start game.",
+                        "Launch the game via DMM when Uma Launcher starts."
+                ));
         this.settings.put(SettingKey.SELECTED_BROWSER,
                 new ComboBoxSetting(
                         "Auto",
@@ -45,6 +51,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Training helper table preset list",
                         "List of presets for the automatic training event helper.",
                         true
+                ));
+        this.settings.put(SettingKey.ENABLE_RICH_PRESENCE,
+                new BoolSetting(
+                        true,
+                        "Enable Discord rich presence",
+                        "Show current game status as an activity in Discord."
                 ));
         this.settings.put(SettingKey.GAMETORA_DARK_MODE,
                 new BoolSetting(
@@ -77,6 +89,8 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
         WRITE_PACKETS,
         SELECTED_BROWSER,
         BROWSER_POSITION,
+        ENABLE_RICH_PRESENCE,
+        ENABLE_LAUNCH_GAME,
         TRAINING_HELPER_TABLE_PRESET_LIST,
         GAMETORA_DARK_MODE,
         ENABLE_BROWSER_OVERRIDE,
