@@ -66,10 +66,9 @@ public class CarrotJuicerTasks {
 
         gtEventHelper.setUrl(url);
         gtEventHelper.ensureTabOpen();
+        gtEventHelper.updateOverlay(this.helperTableGenerator.generateHtml(new TrainingState(response)));
 
-        this.helperTableGenerator.setTrainingState(new TrainingState(response));
 
-        this.helperTableGenerator.generateHtml();
     }
 
     private void trainingEventTask(ResponsePacket response) {

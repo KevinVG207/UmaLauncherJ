@@ -1,6 +1,7 @@
 package com.kevinvg.umalauncherj.settings.types;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.kevinvg.umalauncherj.settings.Setting;
 import lombok.*;
 
@@ -18,7 +19,7 @@ public class ComboBoxSetting extends Setting<String> {
     }
 
     public ComboBoxSetting(String value, String name, String description, boolean hidden, List<String> choices) {
-        super(null, String.class, name, description, hidden);
+        super(null, new TypeReference<>(){}, name, description, hidden);
         this.choices = Collections.unmodifiableList(choices);
         setValue(value);
     }

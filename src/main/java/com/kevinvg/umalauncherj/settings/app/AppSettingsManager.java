@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.settings.app;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -9,11 +10,14 @@ import com.kevinvg.umalauncherj.util.FileUtil;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Singleton
@@ -62,6 +66,7 @@ public class AppSettingsManager {
         log.info("Settings loaded");
     }
 
+    @Synchronized
     public void saveSettings() {
         log.info("Saving settings");
         var settingsFile = getSettingsFile();
@@ -128,12 +133,12 @@ public class AppSettingsManager {
                 log.warn("Value for key {} not found in old settings", keyString);
             }
 
-            var oldValueClass = currentSettingsMap.get(key).getValue().getClass();
+            TypeReference<?> typeReference = currentSettingsMap.get(key).getTypeReference();
             Object newValue;
             try {
-                newValue = mapper.convertValue(newValueNode, oldValueClass);
+                newValue = mapper.convertValue(newValueNode, typeReference);
             } catch (Exception e) {
-                log.error("Unable to convert loaded value for {} to class {}", key, oldValueClass, e);
+                log.error("Unable to convert loaded value for {} to TypeReference {}", key, typeReference, e);
                 continue;
             }
 

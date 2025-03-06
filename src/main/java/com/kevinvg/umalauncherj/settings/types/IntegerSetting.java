@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.settings.types;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.kevinvg.umalauncherj.settings.Setting;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,14 +13,14 @@ import lombok.EqualsAndHashCode;
 @Data
 public class IntegerSetting extends Setting<Integer> {
     public IntegerSetting(Integer value, String name, String description) {
-        super(value, Integer.class, name, description);
+        super(value, new TypeReference<>(){}, name, description);
     }
 
     public IntegerSetting(Integer value, String name, String description, boolean hidden) {
-        super(value, Integer.class, name, description, hidden);
+        super(value, new TypeReference<>(){}, name, description, hidden);
     }
 
     public IntegerSetting(Integer value, String name, String description, boolean hidden, String tab) {
-        super(value, Integer.class, name, description, hidden, tab);
+        super(value, new TypeReference<>(){}, name, description, hidden, tab);
     }
 }

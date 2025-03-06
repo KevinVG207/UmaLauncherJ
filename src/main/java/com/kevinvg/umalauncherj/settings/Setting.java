@@ -2,6 +2,7 @@ package com.kevinvg.umalauncherj.settings;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.AllArgsConstructor;
@@ -38,18 +39,18 @@ public abstract class Setting<T> {
     private boolean hidden;
 
     @JsonIgnore
-    private Class<T> clazz;
+    private TypeReference<T> typeReference;
 
-    protected Setting(T value, Class<T> clazz, String name, String description) {
-        this(value, clazz, name, description, false);
+    protected Setting(T value, TypeReference<T> typeReference, String name, String description) {
+        this(value, typeReference, name, description, false);
     }
 
-    protected Setting(T value, Class<T> clazz, String name, String description, boolean hidden) {
-        this(value, clazz, name, description, hidden, "General");
+    protected Setting(T value, TypeReference<T> typeReference, String name, String description, boolean hidden) {
+        this(value, typeReference, name, description, hidden, "General");
     }
 
-    protected Setting(T value, Class<T> clazz, String name, String description, boolean hidden, String tab) {
-        this.clazz = clazz;
+    protected Setting(T value, TypeReference<T> typeReference, String name, String description, boolean hidden, String tab) {
+        this.typeReference = typeReference;
         this.name = name;
         this.description = description;
         this.hidden = hidden;

@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.settings.app;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.kevinvg.umalauncherj.helpertable.Preset;
 import com.kevinvg.umalauncherj.settings.Settings;
 import com.kevinvg.umalauncherj.settings.types.*;
@@ -39,7 +40,7 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Position of the browser window."
                 ));
         this.settings.put(SettingKey.TRAINING_HELPER_TABLE_PRESET_LIST,
-                new ListSetting(
+                new PresetListSetting(
                         List.of(new Preset()),
                         "Training helper table preset list",
                         "List of presets for the automatic training event helper.",

@@ -13,9 +13,7 @@ public class Overlay extends HelperTableElement {
     public String generate(TrainingState state) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append(new Energy(preset).generate(state));
-        sb.append(new SkillPoints(preset).generate(state));
-        sb.append(new Fans(preset).generate(state));
+        sb.append(new SimpleStatsContainer(preset).generate(state));
         sb.append(new HelperTable(preset).generate(state));
 
         return sb.toString();

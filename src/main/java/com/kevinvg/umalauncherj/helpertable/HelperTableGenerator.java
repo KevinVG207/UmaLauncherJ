@@ -24,6 +24,9 @@ public class HelperTableGenerator {
     @Getter
     private TrainingState trainingState;
 
+    @Getter
+    private TrainingState prevTrainingState;
+
     @Inject
     HelperTableGenerator(AppSettingsManager settings) {
         this.settings = settings;
@@ -44,7 +47,13 @@ public class HelperTableGenerator {
 
         Preset preset = presets.getFirst();
 
-        return new Overlay(preset).generate(trainingState);
+        String html = new Overlay(preset).generate(trainingState);
+
+        if (trainingState != prevTrainingState) {
+            prevTrainingState = trainingState;
+        }
+
+        return html;
     }
 
     public String generateHtml(TrainingState trainingState) {
