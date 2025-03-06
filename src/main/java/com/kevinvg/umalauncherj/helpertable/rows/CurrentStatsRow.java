@@ -1,27 +1,34 @@
 package com.kevinvg.umalauncherj.helpertable.rows;
 
-import com.kevinvg.umalauncherj.helpertable.Cell;
-import com.kevinvg.umalauncherj.helpertable.CommandState;
-import com.kevinvg.umalauncherj.helpertable.Row;
+import com.kevinvg.umalauncherj.helpertable.domain.Cell;
+import com.kevinvg.umalauncherj.helpertable.domain.Row;
+import com.kevinvg.umalauncherj.helpertable.domain.TrainingState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class CurrentStatsRow extends Row {
-    private final String longName = "Current stats";
-    protected String shortName = "Current Stats";
-    protected String description = "Shows the current stats of each facility.";
+    @Override
+    public String getLongName() {
+        return "Current stats";
+    }
 
     @Override
-    public List<Cell> getCells(Map<String, CommandState> commandStates) {
+    public String getShortName() {
+        return "Current Stats";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Shows the current stats of each facility.";
+    }
+
+    @Override
+    public List<Cell> generateCells(TrainingState state) {
         ArrayList<Cell> cells = new ArrayList<>();
-        cells.add(new Cell(this.shortName, this.description));
-
-        for (Map.Entry<String, CommandState> entry : commandStates.entrySet()) {
-            cells.add(new Cell(Integer.toString(entry.getValue().getCurrentStats())));
+        for (var commandState : state.getCommands()) {
+            cells.add(new Cell(Integer.toString(commandState.getCurrentStats())));
         }
-
         return cells;
     }
 }

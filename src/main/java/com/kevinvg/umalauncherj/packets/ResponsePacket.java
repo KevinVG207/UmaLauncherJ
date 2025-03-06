@@ -2,6 +2,7 @@ package com.kevinvg.umalauncherj.packets;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
+import io.quarkus.arc.WithCaching;
 
 public class ResponsePacket {
     private JsonNode data;

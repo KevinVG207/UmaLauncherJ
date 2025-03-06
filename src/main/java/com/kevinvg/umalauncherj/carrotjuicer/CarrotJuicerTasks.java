@@ -3,11 +3,11 @@ package com.kevinvg.umalauncherj.carrotjuicer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kevinvg.umalauncherj.gametora.GtLanguage;
 import com.kevinvg.umalauncherj.gametora.GtUtil;
-import com.kevinvg.umalauncherj.helpertable.HelperTable;
+import com.kevinvg.umalauncherj.helpertable.HelperTableGenerator;
+import com.kevinvg.umalauncherj.helpertable.domain.TrainingState;
 import com.kevinvg.umalauncherj.mdb.MdbService;
 import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
-import com.kevinvg.umalauncherj.selenium.Horsium;
 import com.kevinvg.umalauncherj.selenium.instances.GtEventHelper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -21,13 +21,13 @@ public class CarrotJuicerTasks {
     private ResponsePacket prevResponse;
     private RequestPacket prevRequest;
 
-    private HelperTable helperTable;
+    private HelperTableGenerator helperTableGenerator;
     private MdbService mdb;
     private GtEventHelper gtEventHelper;
 
     @Inject
-    CarrotJuicerTasks(HelperTable helperTable, MdbService mdb, GtEventHelper gtEventHelper) {
-        this.helperTable = helperTable;
+    CarrotJuicerTasks(HelperTableGenerator helperTableGenerator, MdbService mdb, GtEventHelper gtEventHelper) {
+        this.helperTableGenerator = helperTableGenerator;
         this.mdb = mdb;
         this.gtEventHelper = gtEventHelper;
     }
@@ -66,8 +66,9 @@ public class CarrotJuicerTasks {
 
         gtEventHelper.setUrl(url);
         gtEventHelper.ensureTabOpen();
+        gtEventHelper.updateOverlay(this.helperTableGenerator.generateHtml(new TrainingState(response)));
 
-        this.helperTable.generateHtml();
+
     }
 
     private void trainingEventTask(ResponsePacket response) {

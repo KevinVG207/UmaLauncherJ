@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.helpertable;
 
+import com.kevinvg.umalauncherj.helpertable.domain.Row;
 import com.kevinvg.umalauncherj.helpertable.rows.CurrentStatsRow;
 import lombok.Data;
 

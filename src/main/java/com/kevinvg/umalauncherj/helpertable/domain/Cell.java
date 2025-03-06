@@ -1,9 +1,11 @@
-package com.kevinvg.umalauncherj.helpertable;
+package com.kevinvg.umalauncherj.helpertable.domain;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class Cell {
+public class Cell extends HelperTableElement {
     private String value = "";
     private boolean bold = false;
     private String color = "";
@@ -21,7 +23,7 @@ public class Cell {
         this.title = title;
     }
 
-    public String makeTd() {
+    public String generate(TrainingState state) {
         var curStyle = this.style;
         if (this.bold) {
             curStyle += "font-weight:bold;";
