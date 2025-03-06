@@ -8,9 +8,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CurrentStatsRow extends Row {
-    private final String longName = "Current stats";
-    protected String shortName = "Current Stats";
-    protected String description = "Shows the current stats of each facility.";
+    @Override
+    public String getLongName() {
+        return "Current stats";
+    }
+
+    @Override
+    public String getShortName() {
+        return "Current Stats";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Shows the current stats of each facility.";
+    }
 
     @Override
     public List<Cell> generateCells(TrainingState state) {

@@ -24,11 +24,11 @@ public abstract class Row extends HelperTableElement {
     public String generate(TrainingState state) {
         StringBuilder sb = new StringBuilder();
         sb.append("<tr");
-        if (!this.style.isBlank()) {
-            sb.append(" style=\"").append(this.style).append("\"");
+        if (!getStyle().isBlank()) {
+            sb.append(" style=\"").append(getStyle()).append("\"");
         }
         sb.append(">");
-        sb.append(new Cell(shortName, description).generate(state));
+        sb.append(new Cell(getShortName(), getDescription()).generate(state));
         for (var cell : generateCells(state)) {
             sb.append(cell.generate(state));
         }
