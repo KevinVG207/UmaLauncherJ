@@ -13,7 +13,7 @@ public class GameWindowHandler {
     private static WinDef.HWND handle;
     private static boolean hasExisted = false;
 
-    private GameWindowHandler() {
+    GameWindowHandler() {
     }
 
     @Scheduled(every = "0.5s",executionMaxDelay = "500ms",  concurrentExecution = Scheduled.ConcurrentExecution.SKIP)

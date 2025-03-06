@@ -5,9 +5,11 @@ import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.Rect;
+import io.quarkus.runtime.Shutdown;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebDriver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,10 +23,18 @@ public class GtEventHelper extends Horsium {
     }
 
     @Override
+    @Shutdown
+    protected void shutdown() {
+        log.info("Quitting {}", getClass().getSimpleName());
+        drivers.forEach(WebDriver::quit);
+        log.info("Finished quitting {}", getClass().getSimpleName());
+    }
+
+    @Override
     protected void setupPage() {
         Rect rect = settings.get(AppSettings.SettingKey.BROWSER_POSITION);
 
-        if (rect != null) {
+        if (rect != null && rect.isValid()) {
             driver.manage().window().setPosition(new org.openqa.selenium.Point(rect.getX(), rect.getY()));
             driver.manage().window().setSize(new org.openqa.selenium.Dimension(rect.getWidth(), rect.getHeight()));
         }

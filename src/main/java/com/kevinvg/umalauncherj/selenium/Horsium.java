@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class Horsium {
     protected final AppSettingsManager settings;
     protected final UmaUiManager ui;
-    private final List<WebDriver> drivers = new ArrayList<>();
+    protected final List<WebDriver> drivers = new ArrayList<>();
     protected WebDriver driver;
     private String activeHandle = "";
     @Setter
@@ -112,12 +112,7 @@ public abstract class Horsium {
         return false;
     }
 
-    @Shutdown
-    void shutdown() {
-        log.info("Quitting webdrivers");
-        drivers.forEach(WebDriver::quit);
-        log.info("Webdrivers quit");
-    }
+    protected abstract void shutdown();
 
     protected abstract void setupPage();
 

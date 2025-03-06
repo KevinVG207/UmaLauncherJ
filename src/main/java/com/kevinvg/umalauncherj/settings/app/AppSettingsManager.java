@@ -3,6 +3,7 @@ package com.kevinvg.umalauncherj.settings.app;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.kevinvg.umalauncherj.settings.Setting;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
 import io.quarkus.runtime.Startup;
@@ -57,24 +58,7 @@ public class AppSettingsManager {
 
         AppSettingsUpgrader.upgrade(loadedSettingsTree, settings);
 
-        AppSettings loadedSettings;
-        try {
-            loadedSettings = mapper.convertValue(loadedSettingsTree, AppSettings.class);
-        } catch (IllegalArgumentException e) {
-            log.error("Error converting settings tree to AppSettings", e);
-            return;
-        }
-
-        var loadedSettingsMap = loadedSettings.getSettings();
-        var curSettingsMap = this.settings.getSettings();
-        for (var key : curSettingsMap.keySet()) {
-            if (!loadedSettingsMap.containsKey(key)){
-                log.info("Key {} not found in previous settings.", key);
-                continue;
-            }
-            curSettingsMap.get(key).setValue(loadedSettingsMap.get(key).getValue());
-        }
-
+        overwriteSettings(loadedSettingsTree);
         log.info("Settings loaded");
     }
 
@@ -83,8 +67,8 @@ public class AppSettingsManager {
         var settingsFile = getSettingsFile();
         var tmpSettingsFile = new File(settingsFile + ".tmp");
         try {
-            writer.writeValue(tmpSettingsFile, this.settings);
-            Files.copy(tmpSettingsFile.toPath(), settingsFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            writer.writeValue(tmpSettingsFile, this.settings.getSettings());
+            Files.move(tmpSettingsFile.toPath(), settingsFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             log.info("Settings saved");
         } catch (Exception e) {
             ui.showStacktraceDialog(e);
@@ -125,5 +109,35 @@ public class AppSettingsManager {
 
     private static File getSettingsFile() {
         return FileUtil.getAppDataFile(SETTINGS_FILENAME);
+    }
+
+    private void overwriteSettings(JsonNode newSettings) {
+        var currentSettingsMap = this.settings.getSettings();
+        for (var entry : currentSettingsMap.entrySet()) {
+            var key = entry.getKey();
+            var keyString = key.toString();
+
+            var newNode = newSettings.path(keyString);
+            if (newNode.isMissingNode()) {
+                log.warn("Key {} not found in old settings", keyString);
+                continue;
+            }
+
+            var newValueNode = newNode.path("value");
+            if (newValueNode.isMissingNode()) {
+                log.warn("Value for key {} not found in old settings", keyString);
+            }
+
+            var oldValueClass = currentSettingsMap.get(key).getValue().getClass();
+            Object newValue;
+            try {
+                newValue = mapper.convertValue(newValueNode, oldValueClass);
+            } catch (Exception e) {
+                log.error("Unable to convert loaded value for {} to class {}", key, oldValueClass, e);
+                continue;
+            }
+
+            currentSettingsMap.get(key).setValue(newValue);
+        }
     }
 }

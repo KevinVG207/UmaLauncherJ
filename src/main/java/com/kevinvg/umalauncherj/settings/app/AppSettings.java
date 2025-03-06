@@ -3,11 +3,11 @@ package com.kevinvg.umalauncherj.settings.app;
 import com.kevinvg.umalauncherj.helpertable.Preset;
 import com.kevinvg.umalauncherj.settings.Settings;
 import com.kevinvg.umalauncherj.settings.types.*;
+import com.kevinvg.umalauncherj.util.Rect;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.ConfigProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -25,9 +25,16 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Choose how to display support bonds.",
                         List.of("Auto", "Firefox", "Chrome", "Edge")
                 ));
+        this.settings.put(SettingKey.WRITE_PACKETS,
+                new BoolSetting(
+                        false,
+                        "Write packets",
+                        "Write the latest packets to JSON.",
+                        true
+                ));
         this.settings.put(SettingKey.BROWSER_POSITION,
                 new RectSetting(
-                        null,
+                        new Rect(),
                         "Browser position",
                         "Position of the browser window."
                 ));
@@ -66,6 +73,7 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
 
     public enum SettingKey {
         VERSION,
+        WRITE_PACKETS,
         SELECTED_BROWSER,
         BROWSER_POSITION,
         TRAINING_HELPER_TABLE_PRESET_LIST,

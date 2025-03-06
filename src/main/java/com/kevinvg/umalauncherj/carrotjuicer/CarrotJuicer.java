@@ -1,6 +1,9 @@
 package com.kevinvg.umalauncherj.carrotjuicer;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kevinvg.umalauncherj.settings.app.AppSettings;
+import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
 import com.kevinvg.umalauncherj.util.MsgPackHandler;
@@ -22,6 +25,8 @@ import java.util.stream.Stream;
 @Singleton
 public class CarrotJuicer {
     private static final long START_MILLIS = System.currentTimeMillis();
+    private final ObjectMapper mapper;
+    private final AppSettingsManager settings;
     private boolean checkForTimestamps = true;
     private static final Path messagesFolder;
     static {
@@ -35,9 +40,11 @@ public class CarrotJuicer {
 
 
     @Inject
-    CarrotJuicer(CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui) {
+    CarrotJuicer(CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui, ObjectMapper mapper, AppSettingsManager settings) {
         this.carrotJuicerTasks = carrotJuicerTasks;
         this.ui = ui;
+        this.mapper = mapper;
+        this.settings = settings;
     }
 
     @Scheduled(every="0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
@@ -122,7 +129,14 @@ public class CarrotJuicer {
     void processResponse(Path packetPath) {
         System.out.println("Processing response: " + packetPath);
         JsonNode root = MsgPackHandler.responseMsgpackToJsonNode(packetPath);
-//        System.out.println(root);
+
+        if (settings.get(AppSettings.SettingKey.WRITE_PACKETS)) {
+            try {
+                mapper.writerWithDefaultPrettyPrinter().writeValue(FileUtil.getAppDataFile("resp.json"), root);
+            } catch (Exception e) {
+                log.warn("Failed to write response packet JSON.");
+            }
+        }
 
         var dataNode = root.path("data");
 
@@ -139,6 +153,13 @@ public class CarrotJuicer {
     void processRequest(Path packetPath) {
         System.out.println("Processing request: " + packetPath);
         JsonNode root = MsgPackHandler.requestMsgPackToJsonNode(packetPath);
-//        System.out.println(root);
+
+        if (settings.get(AppSettings.SettingKey.WRITE_PACKETS)) {
+            try {
+                mapper.writerWithDefaultPrettyPrinter().writeValue(FileUtil.getAppDataFile("req.json"), root);
+            } catch (Exception e) {
+                log.warn("Failed to write request packet JSON.");
+            }
+        }
     }
 }

@@ -1,39 +1,44 @@
 package com.kevinvg.umalauncherj.tray;
 
 import com.kevinvg.umalauncherj.util.ResourcesUtil;
-import jakarta.inject.Inject;
+import io.quarkus.runtime.Quarkus;
+import io.quarkus.runtime.Shutdown;
+import io.quarkus.runtime.Startup;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
+
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+@Slf4j
 @Singleton
 public class TrayIconController {
     private TrayIcon trayIcon = null;
     private SystemTray systemTray = null;
 
-    private final String iconLocation = "trayIcons/default.png";
+    private static final String ICON_LOCATION = "trayIcons/default.png";
 
-    @Inject
-    public TrayIconController() {
+    @Startup
+    void init() {
         if (!SystemTray.isSupported()) {
-            System.err.println("SystemTray not supported");
+            log.error("SystemTray not supported");
             return;
         }
 
         systemTray = SystemTray.getSystemTray();
 
-        System.out.println(new File(iconLocation).getAbsolutePath());
+        log.info(new File(ICON_LOCATION).getAbsolutePath());
 
-        // Image image = Toolkit.getDefaultToolkit().getImage(iconLocation);
-        Image image = ResourcesUtil.loadImageFromResources(iconLocation);
+        Image image = ResourcesUtil.loadImageFromResources(ICON_LOCATION);
 
         if (image == null) {
-            throw new RuntimeException("Unable to load image from " + iconLocation);
+            throw new RuntimeException("Unable to load image from " + ICON_LOCATION);
         }
 
         ActionListener listener = e -> {
-            System.out.println(e.getActionCommand());
+            log.info(e.getActionCommand());
             this.quitAction();
         };
 
@@ -53,6 +58,14 @@ public class TrayIconController {
     }
 
     private void quitAction() {
-        systemTray.remove(trayIcon);
+        Quarkus.asyncExit();
+    }
+
+    @Shutdown
+    void shutdown() {
+        log.info("TrayIconController shutting down");
+        if (systemTray != null && trayIcon != null) {
+            systemTray.remove(trayIcon);
+        }
     }
 }
