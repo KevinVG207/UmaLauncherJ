@@ -3,6 +3,7 @@ package com.kevinvg.umalauncherj;
 import com.kevinvg.umalauncherj.richpresence.PresenceFactory;
 import com.kevinvg.umalauncherj.richpresence.PresenceManager;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
+import com.kevinvg.umalauncherj.util.FileUtil;
 import com.kevinvg.umalauncherj.util.Win32Util;
 import com.sun.jna.platform.win32.User32;
 import io.quarkus.runtime.Startup;
@@ -30,12 +31,6 @@ public class Sandbox {
     @Startup
     public void init(@Observes StartupEvent ev) {
         log.info("Sandbox started");
-    }
-
-    @Scheduled(every = "10s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
-    void saveSettings() {
-        settingsManager.saveSettings();
-        presenceManager.setPresence(PresenceFactory.defaultActivity());
     }
 
 //    @Scheduled(every = "1s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)

@@ -23,6 +23,7 @@ public abstract class Vpn {
         long checkStartNanos = System.nanoTime();
         boolean totalSuccess = false;
         while (System.nanoTime() - checkStartNanos < TIMEOUT_NANOS) {
+            log.info("Attempting to connect to VPN");
             boolean success = false;
             try {
                 success = this.uniqueConnect();
@@ -40,13 +41,19 @@ public abstract class Vpn {
 
             long connectStartNanos = System.nanoTime();
             while (System.nanoTime() - connectStartNanos < CONNECTION_TIMEOUT_NANOS) {
-                String afterIp = vpnManager.getIp();
+                log.info("Checking IP");
+                String afterIp;
+                try {
+                    afterIp = vpnManager.getIp();
+                } catch (Exception e) {
+                    continue;
+                }
                 if (!afterIp.equals(beforeIp)) {
                     totalSuccess = true;
                     break;
                 }
                 this.afterIpCheck();
-                Thread.sleep(2000);
+//                Thread.sleep(2000);
             }
 
             if (totalSuccess) {
@@ -64,12 +71,13 @@ public abstract class Vpn {
         }
 
         log.info("Successfully connected to VPN server");
-        Thread.sleep(4000);
+//        Thread.sleep(4000);
         vpnManager.tray.setConnected();
         return true;
     }
 
     protected final void disconnect() {
+        log.info("Disconnecting from VPN");
         try {
             this.uniqueDisconnect();
         } catch (Exception e) {

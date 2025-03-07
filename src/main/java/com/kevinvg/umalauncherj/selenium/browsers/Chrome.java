@@ -23,7 +23,7 @@ public class Chrome extends Browser {
                 "-app=" + url
         );
 
-        if (settings.get(AppSettings.SettingKey.ENABLE_BROWSER_OVERRIDE)) {
+        if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.ENABLE_BROWSER_OVERRIDE))) {
             String driverPath = settings.get(AppSettings.SettingKey.BROWSER_CUSTOM_DRIVER);
             if (driverPath != null && !driverPath.isEmpty()) {
                 service.setExecutable(driverPath);

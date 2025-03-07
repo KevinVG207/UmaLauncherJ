@@ -75,6 +75,12 @@ public class SoftEther extends Vpn {
                 return false;
             }
         }
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return true;
     }
 

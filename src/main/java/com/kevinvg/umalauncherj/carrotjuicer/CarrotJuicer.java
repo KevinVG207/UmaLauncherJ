@@ -130,7 +130,7 @@ public class CarrotJuicer {
         System.out.println("Processing response: " + packetPath);
         JsonNode root = MsgPackHandler.responseMsgpackToJsonNode(packetPath);
 
-        if (settings.get(AppSettings.SettingKey.WRITE_PACKETS)) {
+        if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.WRITE_PACKETS))) {
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(FileUtil.getAppDataFile("resp.json"), root);
             } catch (Exception e) {
@@ -154,7 +154,7 @@ public class CarrotJuicer {
         System.out.println("Processing request: " + packetPath);
         JsonNode root = MsgPackHandler.requestMsgPackToJsonNode(packetPath);
 
-        if (settings.get(AppSettings.SettingKey.WRITE_PACKETS)) {
+        if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.WRITE_PACKETS))) {
             try {
                 mapper.writerWithDefaultPrettyPrinter().writeValue(FileUtil.getAppDataFile("req.json"), root);
             } catch (Exception e) {

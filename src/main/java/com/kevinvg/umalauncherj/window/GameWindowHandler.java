@@ -106,6 +106,22 @@ public class GameWindowHandler {
         log.info("Game window detected!");
         hasExisted = true;
         closeNanos = null;
+
+        if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.AUTOCLOSE_DMM))) {
+            var dmmHandle = Win32Util.getDmmHandle();
+            if (dmmHandle != null) {
+                try {
+                    Runtime.getRuntime().exec(new String[]{"taskkill", "/F", "/IM", Win32Util.DMM_EXECUTABLE});
+                } catch (Exception e) {
+                    log.error("Failed to close DMM", e);
+                }
+//                Win32Util.sendCloseSignal(dmmHandle);
+            }
+        }
+
+        if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.VPN_DMM_ONLY))) {
+            vpnManager.disconnect();
+        }
     }
 
     private void gameExists() {

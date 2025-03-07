@@ -24,7 +24,7 @@ import java.util.List;
 @Singleton
 public class VpnManager {
     public final AppSettingsManager settings;
-    protected final UmaUiManager ui;
+    public final UmaUiManager ui;
     protected final TrayIconController tray;
     private List<VpnData> serverList = new ArrayList<>();
     private Vpn vpn;
@@ -44,6 +44,10 @@ public class VpnManager {
     }
 
     public void connect() {
+        if (!settings.<Boolean>get(AppSettings.SettingKey.VPN_ENABLED)) {
+            return;
+        }
+
         String vpnSetting = settings.get(AppSettings.SettingKey.VPN_CLIENT);
         if (vpnSetting == null) {
             log.error("Something went wrong with getting VPN_CLIENT");
@@ -81,6 +85,7 @@ public class VpnManager {
 
     @Shutdown
     void shutdown() {
+        log.info("Shutting down VPNManager");
         disconnect();
     }
 
@@ -89,7 +94,7 @@ public class VpnManager {
             log.info("Requesting VPN server list from Umapyoi.net");
 
             List<VpnData> newList;
-            if (settings.get(AppSettings.SettingKey.VPN_DMM_ONLY)) {
+            if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.VPN_DMM_ONLY))) {
                 newList = vpnService.getDmmVpns();
             } else {
                 newList = vpnService.getCygamesVpns();

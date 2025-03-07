@@ -17,6 +17,7 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
     public enum SettingKey {
         VERSION,
         WRITE_PACKETS,
+        AUTOCLOSE_DMM,
         SELECTED_BROWSER,
         BROWSER_POSITION,
         ENABLE_RICH_PRESENCE,
@@ -26,9 +27,11 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
         ENABLE_BROWSER_OVERRIDE,
         BROWSER_CUSTOM_BINARY,
         BROWSER_CUSTOM_DRIVER,
+        VPN_ENABLED,
         VPN_DMM_ONLY,
         VPN_CLIENT,
         VPN_OVERRIDE_STRING,
+        VPN_CLIENT_PATH
     }
 
     protected String version = ConfigProvider.getConfig().getValue("quarkus.application.version", String.class);
@@ -41,6 +44,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         true,
                         "Auto-start game.",
                         "Launch the game via DMM when Uma Launcher starts."
+                ));
+        this.settings.put(SettingKey.AUTOCLOSE_DMM,
+                new BoolSetting(
+                        true,
+                        "Auto-close DMM",
+                        "Close DMMGamePlayer automatically when the game is determined to be running."
                 ));
         this.settings.put(SettingKey.SELECTED_BROWSER,
                 new ComboBoxSetting(
@@ -99,6 +108,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Browser custom driver",
                         "Path to a custom browser driver.<br>Leave empty to let Selenium decide."
                 ));
+        this.settings.put(SettingKey.VPN_ENABLED,
+                new BoolSetting(
+                        false,
+                        "Auto-VPN enabled",
+                        "Connect to VPN when Uma Launcher is started.<br>For OpenVPN and SoftEther: A random JP server<br>will be chosen from VPN Gate to connect to.<br>NordVPN will connect to Japan."
+                ));
         this.settings.put(SettingKey.VPN_DMM_ONLY,
                 new BoolSetting(
                         true,
@@ -117,6 +132,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "",
                         "VPN override (OpenVPN/SoftEther)",
                         "OpenVPN: Place a path to a custom ovpn profile.<br>SoftEther: Place an IP to override with port (Port is usually 443)"
+                ));
+        this.settings.put(SettingKey.VPN_CLIENT_PATH,
+                new StringSetting(  // TODO: Make a FileDialog setting
+                        "",
+                        "VPN executable path (OpenVPN/NordVPN)",
+                        "Path to the VPN client executable (openvpn.exe or nordvpn.exe).<br>Ignored for SoftEther."
                 ));
     }
 }
