@@ -70,10 +70,14 @@ public class Win32Util {
         return result[0];
     }
 
-    public static WinDef.RECT getWindowRect(WinDef.HWND hWnd) {
+    public static Rect getWindowRect(WinDef.HWND hWnd) {
         var rect = new WinDef.RECT();
         USER_32.GetWindowRect(hWnd, rect);
-        return rect;
+        return Rect.fromWin32Rect(rect);
+    }
+
+    public static void moveWindow(WinDef.HWND hWnd, Rect rect) {
+        moveWindow(hWnd, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 
     public static void moveWindow(WinDef.HWND hWnd, int left, int top, int width, int height) {
@@ -90,7 +94,14 @@ public class Win32Util {
         return USER_32.IsWindow(hWnd);
     }
 
-//    public static void sendCloseSignal(WinDef.HWND handle) {
+    public static Rect getMonitorRect(WinDef.HWND handle) {
+        var monitor = USER_32.MonitorFromWindow(handle, WinUser.MONITOR_DEFAULTTONEAREST);
+        WinUser.MONITORINFOEX monitorInfo = new WinUser.MONITORINFOEX();
+        USER_32.GetMonitorInfo(monitor, monitorInfo);
+        return Rect.fromWin32Rect(monitorInfo.rcWork);
+    }
+
+    //    public static void sendCloseSignal(WinDef.HWND handle) {
 //        log.info("Send close signal to {}", handle);
 //        USER_32.PostMessage(handle, WinUser.WM_CLOSE, new WinDef.WPARAM(0), new WinDef.LPARAM(0));
 //    }

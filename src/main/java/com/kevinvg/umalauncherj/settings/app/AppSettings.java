@@ -5,6 +5,7 @@ import com.kevinvg.umalauncherj.helpertable.Preset;
 import com.kevinvg.umalauncherj.settings.Settings;
 import com.kevinvg.umalauncherj.settings.types.*;
 import com.kevinvg.umalauncherj.util.Rect;
+import com.kevinvg.umalauncherj.util.Safezone;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.config.ConfigProvider;
@@ -17,6 +18,7 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
     public enum SettingKey {
         VERSION,
         WRITE_PACKETS,
+        LOCK_GAME_WINDOW,
         AUTOCLOSE_DMM,
         SELECTED_BROWSER,
         BROWSER_POSITION,
@@ -31,7 +33,10 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
         VPN_DMM_ONLY,
         VPN_CLIENT,
         VPN_OVERRIDE_STRING,
-        VPN_CLIENT_PATH
+        VPN_CLIENT_PATH,
+        GAME_POSITION_PORTRAIT,
+        GAME_POSITION_LANDSCAPE,
+        MAXIMIZE_SAFEZONE
     }
 
     protected String version = ConfigProvider.getConfig().getValue("quarkus.application.version", String.class);
@@ -51,6 +56,13 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Auto-close DMM",
                         "Close DMMGamePlayer automatically when the game is determined to be running."
                 ));
+        this.settings.put(SettingKey.LOCK_GAME_WINDOW,
+                new BoolSetting(
+                        true,
+                        "Lock game window",
+                        "Lock the game window to prevent accidental resizing.",
+                        true
+                ));
         this.settings.put(SettingKey.SELECTED_BROWSER,
                 new ComboBoxSetting(
                         "Auto",
@@ -63,6 +75,20 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         false,
                         "Write packets",
                         "Write the latest packets to JSON.",
+                        true
+                ));
+        this.settings.put(SettingKey.GAME_POSITION_PORTRAIT,
+                new RectSetting(
+                        new Rect(),
+                        "Game position (portrait)",
+                        "Game position (portrait)",
+                        true
+                ));
+        this.settings.put(SettingKey.GAME_POSITION_LANDSCAPE,
+                new RectSetting(
+                        new Rect(),
+                        "Game position (landscape)",
+                        "Game position (landscape)",
                         true
                 ));
         this.settings.put(SettingKey.BROWSER_POSITION,
@@ -138,6 +164,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "",
                         "VPN executable path (OpenVPN/NordVPN)",
                         "Path to the VPN client executable (openvpn.exe or nordvpn.exe).<br>Ignored for SoftEther."
+                ));
+        this.settings.put(SettingKey.MAXIMIZE_SAFEZONE,
+                new SafezoneSetting(
+                        new Safezone(0, 0, 0, 0),
+                        "Safezone for \"Maximize + center game\" in tray menu",
+                        "Amount of pixels to leave around the game window when maximizing.<br><b>If you are having issues streaming the game on Discord,</b> try adding a safezone of at least 8 pixels where your taskbar is."
                 ));
     }
 }

@@ -1,9 +1,7 @@
 package com.kevinvg.umalauncherj.settings.app;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.*;
 import com.kevinvg.umalauncherj.settings.Setting;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
@@ -36,6 +34,9 @@ public class AppSettingsManager {
     AppSettingsManager(UmaUiManager ui) {
         this.ui = ui;
         this.settings = new AppSettings();
+
+        mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+        mapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
     }
 
     @Startup
@@ -65,6 +66,7 @@ public class AppSettingsManager {
 
         overwriteSettings(loadedSettingsTree);
         log.info("Settings loaded");
+        saveSettings();
     }
 
     @Synchronized

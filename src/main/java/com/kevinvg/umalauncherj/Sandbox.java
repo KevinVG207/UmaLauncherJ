@@ -41,11 +41,11 @@ public class Sandbox {
             return;
         }
 
-        var rect = Win32Util.getWindowRect(gameHandle).toRectangle();
+        var rect = Win32Util.getWindowRect(gameHandle);
 
-        rect.x += 200;
+        rect.setX(rect.getX() + 200);
 
         log.info("Moving window");
-        Win32Util.moveWindow(gameHandle, (int)rect.getX(), (int)rect.getY(), (int)rect.getWidth(), (int)rect.getHeight());
+        Win32Util.moveWindow(gameHandle, rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
     }
 }

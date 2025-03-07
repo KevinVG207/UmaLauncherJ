@@ -1,6 +1,7 @@
 package com.kevinvg.umalauncherj.ui;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.annotation.Priority;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,11 +11,14 @@ import java.io.StringWriter;
 
 @Slf4j
 @Singleton
+@Priority(999999)
 public class UmaUiManager {
-
-    @PostConstruct
-    void init() throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    static {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void showStacktraceDialog(String message) {

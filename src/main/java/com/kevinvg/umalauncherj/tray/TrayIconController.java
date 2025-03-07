@@ -1,9 +1,11 @@
 package com.kevinvg.umalauncherj.tray;
 
+import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.util.ResourcesUtil;
+import com.kevinvg.umalauncherj.window.GameWindowManager;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.Shutdown;
-import io.quarkus.runtime.Startup;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,6 +18,7 @@ import java.io.File;
 public class TrayIconController {
     private TrayIcon trayIcon = null;
     private SystemTray systemTray = null;
+    private final PopupMenu popupMenu = new PopupMenu();
 
     private static final String DEFAULT_TOOLTIP = "Uma Launcher";
 
@@ -23,8 +26,10 @@ public class TrayIconController {
     private static final String CONNECTING_ICON = "trayIcons/connecting.png";
     private static final String CONNECTED_ICON = "trayIcons/connected.png";
 
-    @Startup
-    void init() {
+
+    @Inject
+    TrayIconController() {
+        // Setup
         if (!SystemTray.isSupported()) {
             log.error("SystemTray not supported");
             return;
@@ -40,14 +45,11 @@ public class TrayIconController {
             throw new RuntimeException("Unable to load image from " + DEFAULT_ICON);
         }
 
+        MenuItem defaultItem = new MenuItem("Quit");
         ActionListener listener = e -> {
             log.info(e.getActionCommand());
             this.quitAction();
         };
-
-        PopupMenu popupMenu = new PopupMenu();
-
-        MenuItem defaultItem = new MenuItem("Quit");
         defaultItem.addActionListener(listener);
         popupMenu.add(defaultItem);
 
@@ -58,6 +60,10 @@ public class TrayIconController {
         } catch (AWTException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void insertMenuItem(MenuItem menuItem, int index) {
+        popupMenu.insert(menuItem, index);
     }
 
     private void quitAction() {

@@ -44,7 +44,7 @@ public class VpnManager {
     }
 
     public void connect() {
-        if (!settings.<Boolean>get(AppSettings.SettingKey.VPN_ENABLED)) {
+        if (Boolean.FALSE.equals(settings.<Boolean>get(AppSettings.SettingKey.VPN_ENABLED))) {
             return;
         }
 
