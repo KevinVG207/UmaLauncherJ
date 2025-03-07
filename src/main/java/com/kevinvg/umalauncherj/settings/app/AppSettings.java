@@ -14,6 +14,23 @@ import java.util.List;
 @Slf4j
 @EqualsAndHashCode(callSuper = true)
 public class AppSettings extends Settings<AppSettings.SettingKey> {
+    public enum SettingKey {
+        VERSION,
+        WRITE_PACKETS,
+        SELECTED_BROWSER,
+        BROWSER_POSITION,
+        ENABLE_RICH_PRESENCE,
+        ENABLE_LAUNCH_GAME,
+        TRAINING_HELPER_TABLE_PRESET_LIST,
+        GAMETORA_DARK_MODE,
+        ENABLE_BROWSER_OVERRIDE,
+        BROWSER_CUSTOM_BINARY,
+        BROWSER_CUSTOM_DRIVER,
+        VPN_DMM_ONLY,
+        VPN_CLIENT,
+        VPN_OVERRIDE_STRING,
+    }
+
     protected String version = ConfigProvider.getConfig().getValue("quarkus.application.version", String.class);
 
     public AppSettings() {
@@ -82,19 +99,24 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                         "Browser custom driver",
                         "Path to a custom browser driver.<br>Leave empty to let Selenium decide."
                 ));
-    }
-
-    public enum SettingKey {
-        VERSION,
-        WRITE_PACKETS,
-        SELECTED_BROWSER,
-        BROWSER_POSITION,
-        ENABLE_RICH_PRESENCE,
-        ENABLE_LAUNCH_GAME,
-        TRAINING_HELPER_TABLE_PRESET_LIST,
-        GAMETORA_DARK_MODE,
-        ENABLE_BROWSER_OVERRIDE,
-        BROWSER_CUSTOM_BINARY,
-        BROWSER_CUSTOM_DRIVER
+        this.settings.put(SettingKey.VPN_DMM_ONLY,
+                new BoolSetting(
+                        true,
+                        "VPN for DMM only",
+                        "Disconnect from VPN after DMM Game Player is closed.<br>If unchecked, VPN will stay connected until Uma Launcher is closed."
+                ));
+        this.settings.put(SettingKey.VPN_CLIENT,
+                new ComboBoxSetting(
+                        "SoftEther",
+                        "VPN client",
+                        "Choose VPN client to use.<br>Restart Uma Launcher after changing this setting.",
+                        List.of("NordVPN", "OpenVPN", "SoftEther")
+                ));
+        this.settings.put(SettingKey.VPN_OVERRIDE_STRING,
+                new StringSetting(
+                        "",
+                        "VPN override (OpenVPN/SoftEther)",
+                        "OpenVPN: Place a path to a custom ovpn profile.<br>SoftEther: Place an IP to override with port (Port is usually 443)"
+                ));
     }
 }

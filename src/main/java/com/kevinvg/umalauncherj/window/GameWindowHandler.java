@@ -5,6 +5,7 @@ import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.DmmUtil;
 import com.kevinvg.umalauncherj.util.Win32Util;
+import com.kevinvg.umalauncherj.vpn.VpnManager;
 import com.sun.jna.platform.win32.WinDef;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.scheduler.Scheduled;
@@ -23,14 +24,16 @@ public class GameWindowHandler {
     private AppSettingsManager settings;
     private UmaUiManager ui;
     private Long closeNanos = null;
+    private VpnManager vpnManager;
 
     GameWindowHandler() {
     }
 
     @Inject
-    public GameWindowHandler(AppSettingsManager settings, UmaUiManager ui) {
+    public GameWindowHandler(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager) {
         this.settings = settings;
         this.ui = ui;
+        this.vpnManager = vpnManager;
     }
 
     @Scheduled(every = "0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
@@ -65,13 +68,18 @@ public class GameWindowHandler {
         handle = Win32Util.getGameHandle();
 
         if (handle == null && needsToStart && Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.ENABLE_LAUNCH_GAME))) {
-            boolean success = DmmUtil.launchGame();
-            if (!success) {
-                ui.showErrorDialog("Failed to start DMMGamePlayer.");
-            }
+            launchGame();
         }
 
         needsToStart = false;
+    }
+
+    private void launchGame() {
+        vpnManager.connect();
+        boolean success = DmmUtil.launchGame();
+        if (!success) {
+            ui.showErrorDialog("Failed to start DMMGamePlayer.");
+        }
     }
 
     private void gameJustClosed() {
@@ -84,7 +92,7 @@ public class GameWindowHandler {
         log.info("Game window has closed.");
         if (closeNanos != null) {
             var diffNanos = System.nanoTime() - closeNanos;
-            long cutoffNanos = ((long) SECONDS_UNTIL_SHUTDOWN) * 1_000_000_000;
+            long cutoffNanos = SECONDS_UNTIL_SHUTDOWN * 1_000_000_000L;
 
             if (diffNanos > cutoffNanos) {
                 closeNanos = null;
