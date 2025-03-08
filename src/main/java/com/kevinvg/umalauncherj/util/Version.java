@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Slf4j
 @EqualsAndHashCode
@@ -28,7 +29,7 @@ public class Version implements Comparable<Version>{
         }
     }
 
-    public Version(int[] versionArray){
+    public Version(int... versionArray){
         this.versionArray = Arrays.copyOf(versionArray, versionArray.length);
     }
 
@@ -40,5 +41,16 @@ public class Version implements Comparable<Version>{
     @Override
     public String toString() {
         return StringUtils.join(ArrayUtils.toObject(versionArray), ".");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Version version)) return false;
+        return Objects.deepEquals(versionArray, version.versionArray);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(versionArray);
     }
 }

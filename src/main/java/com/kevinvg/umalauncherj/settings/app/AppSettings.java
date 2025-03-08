@@ -17,6 +17,7 @@ import java.util.List;
 public class AppSettings extends Settings<AppSettings.SettingKey> {
     public enum SettingKey {
         VERSION,
+        SKIP_VERSION,
         WRITE_PACKETS,
         LOCK_GAME_WINDOW,
         AUTOCLOSE_DMM,
@@ -44,6 +45,8 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
     public AppSettings() {
         this.settings.put(SettingKey.VERSION,
                 new StringSetting(version != null ? version : "0.0.0", "Version", "Version", true));
+        this.settings.put(SettingKey.SKIP_VERSION,
+                new StringSetting("", "Skip update", "Version to skip updating to.", true));
         this.settings.put(SettingKey.ENABLE_LAUNCH_GAME,
                 new BoolSetting(
                         true,

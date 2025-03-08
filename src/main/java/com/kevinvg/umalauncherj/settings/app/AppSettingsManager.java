@@ -70,7 +70,7 @@ public class AppSettingsManager {
     }
 
     @Synchronized
-    public void saveSettings() {
+    private void saveSettings() {
         log.info("Saving settings");
         var settingsFile = getSettingsFile();
         var tmpSettingsFile = new File(settingsFile + ".tmp");
