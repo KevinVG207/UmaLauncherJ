@@ -23,6 +23,12 @@ public class BrowserService {
 
     @POST
     public Response helperWindowRect(Rect rect) {
+        var existingRect = settings.<Rect>get(AppSettings.SettingKey.BROWSER_POSITION);
+
+        if (rect.equals(existingRect)) {
+            return Response.ok().build();
+        }
+
         settings.set(AppSettings.SettingKey.BROWSER_POSITION, rect);
         return Response.ok().build();
     }

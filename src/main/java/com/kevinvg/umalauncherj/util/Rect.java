@@ -3,8 +3,10 @@ package com.kevinvg.umalauncherj.util;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.jna.platform.win32.WinDef;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode
 public class Rect{
     private static final int JANK_OFFSET = 8;
 
