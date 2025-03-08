@@ -5,6 +5,7 @@ import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import io.quarkus.runtime.Shutdown;
 import io.quarkus.runtime.Startup;
 import io.quarkus.scheduler.Scheduled;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import net.arikia.dev.drpc.DiscordEventHandlers;
@@ -17,17 +18,19 @@ public class PresenceManager {
     private static final String APP_ID = "954453106765225995";
     private final AppSettingsManager settings;
 
+    PresenceFactory presenceFactory;
     DiscordRichPresence currentPresence;
 
-    @jakarta.inject.Inject
-    public PresenceManager(AppSettingsManager settings) {
+    @Inject
+    public PresenceManager(AppSettingsManager settings, PresenceFactory presenceFactory) {
         this.settings = settings;
+        this.presenceFactory = presenceFactory;
     }
 
     @Startup
     void setup() {
         DiscordRPC.discordInitialize(APP_ID, new DiscordEventHandlers.Builder().setReadyEventHandler(user -> log.info("Discord RPC ready")).build(), true);
-        currentPresence = PresenceFactory.defaultActivity();
+        currentPresence = presenceFactory.defaultActivity();
     }
 
     public void setPresence(DiscordRichPresence presence) {
@@ -41,7 +44,7 @@ public class PresenceManager {
             return;
         }
 
-        if (!settings.<Boolean>get(AppSettings.SettingKey.ENABLE_RICH_PRESENCE)) {
+        if (Boolean.FALSE.equals(settings.<Boolean>get(AppSettings.SettingKey.ENABLE_RICH_PRESENCE))) {
             DiscordRPC.discordClearPresence();
             return;
         }

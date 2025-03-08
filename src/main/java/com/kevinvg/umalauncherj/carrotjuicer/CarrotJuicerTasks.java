@@ -8,6 +8,8 @@ import com.kevinvg.umalauncherj.helpertable.domain.TrainingState;
 import com.kevinvg.umalauncherj.mdb.MdbService;
 import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
+import com.kevinvg.umalauncherj.richpresence.PresenceFactory;
+import com.kevinvg.umalauncherj.richpresence.PresenceManager;
 import com.kevinvg.umalauncherj.selenium.instances.GtEventHelper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -18,6 +20,8 @@ import java.util.List;
 @Slf4j
 @Singleton
 public class CarrotJuicerTasks {
+    private final PresenceManager presenceManager;
+    private final PresenceFactory presenceFactory;
     private ResponsePacket prevResponse;
     private RequestPacket prevRequest;
 
@@ -26,10 +30,12 @@ public class CarrotJuicerTasks {
     private GtEventHelper gtEventHelper;
 
     @Inject
-    CarrotJuicerTasks(HelperTableGenerator helperTableGenerator, MdbService mdb, GtEventHelper gtEventHelper) {
+    CarrotJuicerTasks(HelperTableGenerator helperTableGenerator, MdbService mdb, GtEventHelper gtEventHelper, PresenceManager presenceManager, PresenceFactory presenceFactory) {
         this.helperTableGenerator = helperTableGenerator;
         this.mdb = mdb;
         this.gtEventHelper = gtEventHelper;
+        this.presenceManager = presenceManager;
+        this.presenceFactory = presenceFactory;
     }
 
     public void runTasks(ResponsePacket response) {
@@ -51,6 +57,7 @@ public class CarrotJuicerTasks {
 
     private void trainingRunTask(ResponsePacket response) {
         log.info("Training Run Task");
+        presenceManager.setPresence(presenceFactory.trainingActivity(response));
 
         var charaInfo = response.getCharaInfo();
 

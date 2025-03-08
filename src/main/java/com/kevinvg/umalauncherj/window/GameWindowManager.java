@@ -19,9 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Set;
 
 @Slf4j
 @Singleton
@@ -153,7 +151,7 @@ public class GameWindowManager {
                 } catch (Exception e) {
                     log.error("Failed to close DMM", e);
                 }
-//                Win32Util.sendCloseSignal(dmmHandle);
+                //                Win32Util.sendCloseSignal(dmmHandle);
             }
         }
 

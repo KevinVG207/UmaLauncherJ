@@ -2,8 +2,7 @@ package com.kevinvg.umalauncherj.vpn;
 
 import com.kevinvg.umalauncherj.rest.client.IpService;
 import com.kevinvg.umalauncherj.rest.client.IpServiceBackup;
-import com.kevinvg.umalauncherj.rest.client.VpnService;
-import com.kevinvg.umalauncherj.rest.client.domain.IpData;
+import com.kevinvg.umalauncherj.rest.client.UmapyoiService;
 import com.kevinvg.umalauncherj.rest.client.domain.VpnData;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
@@ -15,7 +14,6 @@ import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +28,7 @@ public class VpnManager {
     private Vpn vpn;
 
     @RestClient
-    VpnService vpnService;
+    UmapyoiService umapyoiService;
     @RestClient
     IpService ipService;
     @RestClient
@@ -95,9 +93,9 @@ public class VpnManager {
 
             List<VpnData> newList;
             if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.VPN_DMM_ONLY))) {
-                newList = vpnService.getDmmVpns();
+                newList = umapyoiService.getDmmVpns();
             } else {
-                newList = vpnService.getCygamesVpns();
+                newList = umapyoiService.getCygamesVpns();
             }
 
             if (!newList.isEmpty()) {

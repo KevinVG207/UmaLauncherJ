@@ -4,7 +4,7 @@ import com.kevinvg.umalauncherj.helpertable.Preset;
 import com.kevinvg.umalauncherj.helpertable.domain.HelperTableElement;
 import com.kevinvg.umalauncherj.helpertable.domain.TrainingState;
 
-import static com.kevinvg.umalauncherj.helpertable.domain.Constants.TABLE_HEADERS;
+import static com.kevinvg.umalauncherj.Constants.TABLE_HEADERS;
 
 public class HelperTable extends HelperTableElement {
     private final StringBuilder sb = new StringBuilder();
