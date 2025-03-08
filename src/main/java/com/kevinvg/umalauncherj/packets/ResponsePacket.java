@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.packets;
 
+import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
 import io.quarkus.arc.WithCaching;
@@ -37,5 +38,24 @@ public class ResponsePacket {
         }
 
         return singleModeLoadCommon.get(key);
+    }
+
+    public boolean isTrainingEnd() {
+        var factorSelectNode = getSingleModeKey("single_mode_factor_select_common");
+        return !factorSelectNode.isMissingNode();
+    }
+
+    public boolean isRaceStart() {
+        var raceScenarioNode = getSingleModeKey("race_scenario");
+        var raceStartInfoNode = getSingleModeKey("race_start_info");
+        return !raceScenarioNode.isMissingNode() && !raceStartInfoNode.isMissingNode() && !raceScenarioNode.isEmpty() && !raceStartInfoNode.isEmpty();
+    }
+
+    public JsonNode getRaceStartInfo() {
+        return getSingleModeKey("race_start_info");
+    }
+
+    public JsonNode getRaceHistory() {
+        return getSingleModeKey("race_history");
     }
 }

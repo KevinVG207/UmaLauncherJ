@@ -129,4 +129,8 @@ public abstract class Horsium {
             }
         }
     }
+
+    public void close() {
+        driver.quit();
+    }
 }

@@ -100,7 +100,6 @@ public class GameWindowManager {
     }
 
     private void findGameWindow() {
-        log.info("Checking for game window.");
         handle = Win32Util.getGameHandle();
 
         if (handle == null && needsToStart && Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.ENABLE_LAUNCH_GAME))) {
@@ -125,7 +124,6 @@ public class GameWindowManager {
     }
 
     private void gameIsClosed() {
-        log.info("Game window has closed.");
         if (closeNanos != null) {
             var diffNanos = System.nanoTime() - closeNanos;
             long cutoffNanos = SECONDS_UNTIL_SHUTDOWN * 1_000_000_000L;
@@ -161,8 +159,6 @@ public class GameWindowManager {
     }
 
     private void gameExists() {
-        log.info("Game window exists.");
-
         if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.LOCK_GAME_WINDOW))) {
             var window = new Window(handle, settings);
 

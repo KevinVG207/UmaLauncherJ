@@ -1,8 +1,17 @@
 package com.kevinvg.umalauncherj.gametora;
 
 import java.util.List;
+import java.util.Map;
 
 public class GtUtil {
+    private GtUtil() {}
+
+    public static final Map<Integer, String> EVENT_ID_TO_POS_STRING = Map.ofEntries(
+            Map.entry(7005, "(1st)"),
+            Map.entry(7006, "(2nd-5th)"),
+            Map.entry(7007, "(6th or worse)")
+    );
+
     public static String makeHelperUrl(int cardId, int scenarioId, List<Integer> supportIds, GtLanguage language) {
         if (supportIds.size() < 6) {
             throw new RuntimeException("Cannot make helper url. supportIds.size() < 6. Is " + supportIds.size());

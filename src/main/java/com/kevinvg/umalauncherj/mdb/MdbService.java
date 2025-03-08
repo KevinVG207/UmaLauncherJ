@@ -146,4 +146,17 @@ public class MdbService {
             return eventTitles;
         }
     }
+
+    public int getGradeFromProgramId(int programId) {
+        try (var stmt = conn.prepareStatement("SELECT r.grade FROM single_mode_program smp JOIN race_instance ri on smp.race_instance_id = ri.id JOIN race r on ri.race_id = r.id WHERE smp.id = ? LIMIT 1;")) {
+            stmt.setInt(1, programId);
+            var rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            log.error("Exception fetching race grade for {}", programId);
+        }
+        return -1;
+    }
 }

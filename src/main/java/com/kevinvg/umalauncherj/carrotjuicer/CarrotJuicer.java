@@ -65,7 +65,7 @@ public class CarrotJuicer {
         var files = new File(String.valueOf(messagesFolder)).listFiles();
 
         if (files == null) {
-            System.err.println("Error listing files in CarrotJuicer directory");
+            log.error("Error listing files in CarrotJuicer directory");
             return new ArrayList<>();
         }
 
@@ -108,12 +108,11 @@ public class CarrotJuicer {
                     this.processRequest(packetPath);
                 }
             } else {
-                System.out.println("Packet name not valid: " + packetName);
+                log.error("Packet name not valid: " + packetName);
             }
         } catch (Exception e) {
             // FIXME: Catching everything blech
-            log.error("Error processing packet " + packetName);
-            e.printStackTrace();
+            log.error("Error processing packet {}", packetName, e);
             ui.showStacktraceDialog(e);
         } finally {
             try {
@@ -127,7 +126,7 @@ public class CarrotJuicer {
     }
 
     void processResponse(Path packetPath) {
-        System.out.println("Processing response: " + packetPath);
+        log.info("Processing response: {}", packetPath);
         JsonNode root = MsgPackHandler.responseMsgpackToJsonNode(packetPath);
 
         if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.WRITE_PACKETS))) {
@@ -141,17 +140,15 @@ public class CarrotJuicer {
         var dataNode = root.path("data");
 
         if (dataNode.isMissingNode() || !dataNode.isObject()) {
-            System.err.println("Response packet does not contain 'data'");
+            log.error("Response packet does not contain 'data'");
             return;
         }
-
-        System.out.println("Root node contains 'data'");
 
         carrotJuicerTasks.runTasks(new ResponsePacket(dataNode));
     }
 
     void processRequest(Path packetPath) {
-        System.out.println("Processing request: " + packetPath);
+        log.info("Processing request: {}", packetPath);
         JsonNode root = MsgPackHandler.requestMsgPackToJsonNode(packetPath);
 
         if (Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.WRITE_PACKETS))) {
