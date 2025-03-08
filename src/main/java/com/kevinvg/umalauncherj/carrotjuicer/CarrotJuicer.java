@@ -87,8 +87,6 @@ public class CarrotJuicer {
             if (packetName.endsWith(".msgpack")) {
                 if (checkForTimestamps) {
                     String timestampString = packetName.substring(0, packetName.length() - 9);
-                    log.info("Timestamp: {}", timestampString);
-
                     try {
                         long timestamp = Long.parseLong(timestampString);
 

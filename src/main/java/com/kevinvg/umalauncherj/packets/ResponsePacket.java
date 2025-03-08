@@ -1,9 +1,8 @@
 package com.kevinvg.umalauncherj.packets;
 
-import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
-import io.quarkus.arc.WithCaching;
+import lombok.Data;
 
 public class ResponsePacket {
     private JsonNode data;
@@ -30,6 +29,15 @@ public class ResponsePacket {
         return eventData;
     }
 
+    public JsonNode getSingleModeData() {
+        var singleModeLoadCommon = data.path("single_mode_load_common");
+
+        if (singleModeLoadCommon.isMissingNode()) {
+            return data;
+        }
+        return singleModeLoadCommon;
+    }
+
     private JsonNode getSingleModeKey(String key) {
         var singleModeLoadCommon = data.path("single_mode_load_common");
 
@@ -37,7 +45,19 @@ public class ResponsePacket {
             return data.path(key);
         }
 
-        return singleModeLoadCommon.get(key);
+        return singleModeLoadCommon.path(key);
+    }
+
+    public boolean isTrainingRunTurn() {
+        var charaInfo = getCharaInfo();
+        var homeInfo = getSingleModeKey("home_info");
+        if (homeInfo.isMissingNode()) {
+            return false;
+        }
+        if (charaInfo.isMissingNode()) {
+            return false;
+        }
+        return true;
     }
 
     public boolean isTrainingEnd() {

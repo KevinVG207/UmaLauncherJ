@@ -54,7 +54,7 @@ public class CarrotJuicerTasks {
         if (!response.getRaceHistory().isMissingNode()) {
             this.raceHistoryTask(response);
         }
-        if (!response.getCharaInfo().isMissingNode()) {
+        if (response.isTrainingRunTurn()) {
             this.trainingRunTask(response);
         }
         if (!response.getTrainingEvent().isMissingNode()) {
@@ -89,8 +89,6 @@ public class CarrotJuicerTasks {
         gtEventHelper.setUrl(url);
         gtEventHelper.ensureTabOpen();
         gtEventHelper.updateOverlay(this.helperTableGenerator.generateHtml(new TrainingState(response)));
-
-
     }
 
     private void trainingEventTask(ResponsePacket response) {

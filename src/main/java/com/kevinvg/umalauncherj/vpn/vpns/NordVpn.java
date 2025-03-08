@@ -34,7 +34,7 @@ public class NordVpn extends Vpn {
             return false;
         }
         try {
-            Thread.sleep(5000);
+            Thread.sleep(10_000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -56,7 +56,7 @@ public class NordVpn extends Vpn {
             return;
         }
         try {
-            Thread.sleep(10_000);
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

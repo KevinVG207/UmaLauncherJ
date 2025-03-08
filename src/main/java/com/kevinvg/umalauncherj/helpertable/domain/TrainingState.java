@@ -3,6 +3,7 @@ package com.kevinvg.umalauncherj.helpertable.domain;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import lombok.Data;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,5 +34,24 @@ public class TrainingState {
         this.skillPt = charaInfo.path("skill_point").asInt();
 
         this.commands = new ArrayList<>();
+
+        var root = responsePacket.getSingleModeData();
+
+        var homeInfo = root.path("home_info");
+
+        for (var commandInfo : homeInfo.path("command_info_array")) {
+            commands.add(CommandState.fromCommandInfo(commandInfo, charaInfo));
+        }
+    }
+
+    public List<CommandState> getRelevantCommands() {
+        List<CommandState> out = new ArrayList<>();
+        for (var command : commands) {
+            if (command.getCommandType() == CommandType.UNKNOWN) {
+                continue;
+            }
+            out.add(command);
+        }
+        return out;
     }
 }

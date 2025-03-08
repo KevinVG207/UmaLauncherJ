@@ -26,7 +26,7 @@ public class CurrentStatsRow extends Row {
     @Override
     public List<Cell> generateCells(TrainingState state) {
         ArrayList<Cell> cells = new ArrayList<>();
-        for (var commandState : state.getCommands()) {
+        for (var commandState : state.getRelevantCommands()) {
             cells.add(new Cell(Integer.toString(commandState.getCurrentStats())));
         }
         return cells;

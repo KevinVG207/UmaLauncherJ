@@ -27,7 +27,7 @@ public class HelperTable extends HelperTableElement {
         sb.append("<thead>");
         sb.append("<tr>");
         sb.append("<th style=\"text-overflow: clip;white-space: nowrap;overflow: hidden;\">Facility</th>");
-        for (var commandState : state.getCommands()) {
+        for (var commandState : state.getRelevantCommands()) {
             sb.append("<th style=\"text-overflow: clip;white-space: nowrap;overflow: hidden;\">");
             sb.append(TABLE_HEADERS.getOrDefault(commandState.getCommandType(), "Facility"));
             sb.append("</th>");
