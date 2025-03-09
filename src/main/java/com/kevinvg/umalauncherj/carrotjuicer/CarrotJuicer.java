@@ -2,6 +2,7 @@ package com.kevinvg.umalauncherj.carrotjuicer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kevinvg.umalauncherj.StartupManager;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
@@ -27,6 +28,7 @@ public class CarrotJuicer {
     private static final long START_MILLIS = System.currentTimeMillis();
     private final ObjectMapper mapper;
     private final AppSettingsManager settings;
+    private final StartupManager startupManager;
     private boolean checkForTimestamps = true;
     private static final Path messagesFolder;
     static {
@@ -40,15 +42,18 @@ public class CarrotJuicer {
 
 
     @Inject
-    CarrotJuicer(CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui, ObjectMapper mapper, AppSettingsManager settings) {
+    CarrotJuicer(CarrotJuicerTasks carrotJuicerTasks, UmaUiManager ui, ObjectMapper mapper, AppSettingsManager settings, StartupManager startupManager) {
         this.carrotJuicerTasks = carrotJuicerTasks;
         this.ui = ui;
         this.mapper = mapper;
         this.settings = settings;
+        this.startupManager = startupManager;
     }
 
     @Scheduled(every="0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void processPackets() {
+        if (!startupManager.isStarted()) return;
+
         log.info("Processing packets");
         var newPacketNames = getNewPacketNames();
 

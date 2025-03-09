@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 public class FileUtil {
     private static final String APPDATA_FOLDER = System.getenv("APPDATA") + "/UmaLauncherJ";
     private static final String DMM_CONFIG_PATH = System.getenv("APPDATA") + "/dmmgameplayer5/dmmgame.cnf";
+    public static final Path EXE_FOLDER = Path.of(new File(FileUtil.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm()).toString().substring(6)).toAbsolutePath().getParent();
+    public static final String EXE_NAME = new File(FileUtil.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm()).getName();
 
     private static Path gameFolder = null;
 

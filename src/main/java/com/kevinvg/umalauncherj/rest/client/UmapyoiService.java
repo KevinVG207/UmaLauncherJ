@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.rest.client;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.kevinvg.umalauncherj.rest.client.domain.CharaNameData;
 import com.kevinvg.umalauncherj.rest.client.domain.DiscordAsset;
 import com.kevinvg.umalauncherj.rest.client.domain.OutfitData;
@@ -31,4 +32,8 @@ public interface UmapyoiService {
     @GET
     @Path("/outfit")
     List<OutfitData> getOutfits();
+
+    @GET
+    @Path("/github/KevinVG207/UmaLauncherJ/releases")
+    List<JsonNode> getReleases();
 }

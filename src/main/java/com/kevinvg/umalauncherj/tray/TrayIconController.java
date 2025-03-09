@@ -37,8 +37,6 @@ public class TrayIconController {
 
         systemTray = SystemTray.getSystemTray();
 
-        log.info(new File(DEFAULT_ICON).getAbsolutePath());
-
         Image image = ResourcesUtil.loadImageFromResources(DEFAULT_ICON);
 
         if (image == null) {
