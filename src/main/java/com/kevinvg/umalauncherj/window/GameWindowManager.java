@@ -77,6 +77,8 @@ public class GameWindowManager {
 
     @Scheduled(every = "0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void checkForGameWindow() {
+        log.info("startupManager: {}", startupManager);
+        log.info("started: {}", startupManager.isStarted());
         if (!startupManager.isStarted()) return;
 
         // Trying to find the game for the first time

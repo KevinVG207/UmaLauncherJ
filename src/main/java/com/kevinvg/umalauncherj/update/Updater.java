@@ -52,7 +52,10 @@ public class Updater {
     public void checkUpdate() {
         log.info("Checking for updates...");
 
-        handleFromPreviousVersion();
+        if (handleFromPreviousVersion()) {
+            done = true;
+            return;
+        }
 
         if (isDevProfile()) {
             log.info("Skipping auto-update routine in dev profile.");
@@ -84,14 +87,15 @@ public class Updater {
         return false;
     }
 
-    private void handleFromPreviousVersion() {
+    private boolean handleFromPreviousVersion() {
         if (!UPDATE_FILE.exists()) {
-            return;
+            return false;
         }
         UPDATE_FILE.delete();
 
         var currentVersion = new Version(settings.<String>get(AppSettings.SettingKey.VERSION));
         ui.showInfoDialog("Update complete!", "Uma Launcher updated successfully to v%s".formatted(currentVersion.toString()));
+        return true;
     }
 
     private UpdateInfo determineLatestVersion() {
@@ -145,6 +149,7 @@ public class Updater {
 
     public void askForUpdateCallback(UpdateInfo updateInfo, boolean success) {
         if (!success) {
+            done = true;
             return;
         }
         this.updateInfo = updateInfo;
@@ -168,6 +173,7 @@ public class Updater {
         String exeFile = FileUtil.EXE_NAME;
         String exePath = FileUtil.EXE_FOLDER.resolve(exeFile).toAbsolutePath().toString();
         String withoutExt = exeFile.substring(0, exeFile.lastIndexOf('.'));
+        String exePathWithoutExt = FileUtil.EXE_FOLDER.resolve(withoutExt).toAbsolutePath().toString();
         String oldFile = withoutExt + ".old";
         String oldPath = FileUtil.getAppDataFile(oldFile).getAbsolutePath();
         String tmpFile = withoutExt + ".tmp";
@@ -191,20 +197,14 @@ public class Updater {
             log.error("Could not write update file");
         }
 
-//        String commandPart = "timeout 5 && taskkill /F /T /IM \"%s\" && timeout 1 && move /y \"%s\" \"%s\" && move /y \"%s\" \"%s\" && start \"%s\" && timeout 20".formatted(
-//                exeFile, exePath, oldPath, tmpPath, exePath, exePath
-//        );
-//        String commandPart = "timeout 60";
-
         StringBuilder sb = new StringBuilder();
         sb.append("taskkill /F ");
         for (int pid : Win32Util.getAllProcessIds()) {
             sb.append("/PID ").append(pid).append(" ");
         }
-        sb.append("& timeout 1 && move /y \"%s\" \"%s\" && move /y \"%s\" \"%s\" && \"%s\"".formatted(exePath, oldPath, tmpPath, exePath, exePath));
+        sb.append("& timeout /t 2 /nobreak && move /y \"%s\" \"%s\" && move /y \"%s\" \"%s\" && start /B \"\" \"%s\"".formatted(exePath, oldPath, tmpPath, exePath, exePathWithoutExt));
 
-        String[] command = {"cmd", "/k", "start \"UmaLauncherUpdater\" \"cmd\" /k \"" + sb + "\""};
-//        String[] command = {"taskkill", "/F", "/T", "/IM", exeFile, "&&", "timeout", "1", "&&", "move", "/y", exePath, oldPath, "&&", "move", "/y", tmpPath, exePath, "&&", exePath};
+        String[] command = {"cmd", "/c", "start \"UmaLauncherUpdater\" \"cmd\" /c \"" + sb + "\""};
         log.info("Command: {}", Arrays.toString(command));
         try {
             Runtime.getRuntime().exec(command).waitFor();
@@ -212,7 +212,9 @@ public class Updater {
             log.error("Error executing command", e);
         }
 
-//        done = true;
-        ui.showErrorDialog("Something went wrong with the update.");
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {}
+        UPDATE_FILE.delete();
     }
 }

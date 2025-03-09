@@ -196,7 +196,7 @@
                         <phase>package</phase>
                         <goals><goal>launch4j</goal></goals>
                         <configuration>
-                            <headerType>console</headerType>
+                            <headerType>gui</headerType>
                             <outfile>target/UmaLauncherJ.exe</outfile>
                             <jar>target/${project.artifactId}-${project.version}-runner.jar</jar>
                             <manifest>UmaLauncherJ.exe.manifest</manifest>
