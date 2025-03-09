@@ -83,8 +83,7 @@ public class Updater {
     }
 
     private boolean isDevProfile() {
-//        return ConfigUtils.getProfiles().contains("dev");
-        return false;
+        return ConfigUtils.getProfiles().contains("dev");
     }
 
     private boolean handleFromPreviousVersion() {
