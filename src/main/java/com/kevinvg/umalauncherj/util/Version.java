@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.Objects;
 
 @Slf4j
-@EqualsAndHashCode
 public class Version implements Comparable<Version>{
     private int[] versionArray = {0,0,0};
 

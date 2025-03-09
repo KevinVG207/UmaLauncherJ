@@ -6,6 +6,7 @@ import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
 import com.kevinvg.umalauncherj.util.Version;
+import com.kevinvg.umalauncherj.util.Win32Util;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import io.quarkus.scheduler.Scheduled;
 import jakarta.inject.Inject;
@@ -16,6 +17,17 @@ import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 
 @Slf4j
 @Singleton
@@ -38,6 +50,8 @@ public class Updater {
     }
 
     public void checkUpdate() {
+        log.info("Checking for updates...");
+
         handleFromPreviousVersion();
 
         if (isDevProfile()) {
@@ -66,8 +80,8 @@ public class Updater {
     }
 
     private boolean isDevProfile() {
-        return false;
 //        return ConfigUtils.getProfiles().contains("dev");
+        return false;
     }
 
     private void handleFromPreviousVersion() {
@@ -144,7 +158,61 @@ public class Updater {
         var curUpdate = updateInfo;
         updateInfo = null;
 
+        ui.showUpdateDialog();
+
         log.info("Updating to version {}", curUpdate.version());
         log.info("Software is now softlocked");
+        log.info("EXE_FOLDER {}", FileUtil.EXE_FOLDER);
+        log.info("EXE_NAME {}", FileUtil.EXE_NAME);
+
+        String exeFile = FileUtil.EXE_NAME;
+        String exePath = FileUtil.EXE_FOLDER.resolve(exeFile).toAbsolutePath().toString();
+        String withoutExt = exeFile.substring(0, exeFile.lastIndexOf('.'));
+        String oldFile = withoutExt + ".old";
+        String oldPath = FileUtil.getAppDataFile(oldFile).getAbsolutePath();
+        String tmpFile = withoutExt + ".tmp";
+        String tmpPath = FileUtil.getAppDataFile(tmpFile).getAbsolutePath();
+
+        log.info("Downloading new exe");
+        try {
+            var in = new URI(curUpdate.url()).toURL().openStream();
+            Files.copy(in, Paths.get(tmpPath), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            log.error("Error downloading exe", e);
+            ui.showErrorDialog("Error downloading exe");
+            done = true;
+            return;
+        }
+
+        log.info("Download complete. Performing switcheroo");
+        try (PrintWriter writer = new PrintWriter(UPDATE_FILE)) {
+            writer.write("");
+        } catch (FileNotFoundException e) {
+            log.error("Could not write update file");
+        }
+
+//        String commandPart = "timeout 5 && taskkill /F /T /IM \"%s\" && timeout 1 && move /y \"%s\" \"%s\" && move /y \"%s\" \"%s\" && start \"%s\" && timeout 20".formatted(
+//                exeFile, exePath, oldPath, tmpPath, exePath, exePath
+//        );
+//        String commandPart = "timeout 60";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("taskkill /F ");
+        for (int pid : Win32Util.getAllProcessIds()) {
+            sb.append("/PID ").append(pid).append(" ");
+        }
+        sb.append("& timeout 1 && move /y \"%s\" \"%s\" && move /y \"%s\" \"%s\" && \"%s\"".formatted(exePath, oldPath, tmpPath, exePath, exePath));
+
+        String[] command = {"cmd", "/k", "start \"UmaLauncherUpdater\" \"cmd\" /k \"" + sb + "\""};
+//        String[] command = {"taskkill", "/F", "/T", "/IM", exeFile, "&&", "timeout", "1", "&&", "move", "/y", exePath, oldPath, "&&", "move", "/y", tmpPath, exePath, "&&", exePath};
+        log.info("Command: {}", Arrays.toString(command));
+        try {
+            Runtime.getRuntime().exec(command).waitFor();
+        } catch (Exception e) {
+            log.error("Error executing command", e);
+        }
+
+//        done = true;
+        ui.showErrorDialog("Something went wrong with the update.");
     }
 }

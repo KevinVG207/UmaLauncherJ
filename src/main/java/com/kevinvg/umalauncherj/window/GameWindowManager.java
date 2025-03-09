@@ -46,6 +46,7 @@ public class GameWindowManager {
         this.ui = ui;
         this.vpnManager = vpnManager;
         this.trayIcon = trayIcon;
+        this.startupManager = startupManager;
 
         MenuItem maximizeItem = new MenuItem("Maximize & center game");
         ActionListener maximizeListener = e -> this.maximizeAndCenter();
@@ -64,7 +65,6 @@ public class GameWindowManager {
         lockWindowItem.setState(Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.LOCK_GAME_WINDOW)));
         lockWindowItem.addItemListener(lockWindowListener);
         trayIcon.insertMenuItem(lockWindowItem, 0);
-        this.startupManager = startupManager;
     }
 
     private void saveCurrentWindowRect() {

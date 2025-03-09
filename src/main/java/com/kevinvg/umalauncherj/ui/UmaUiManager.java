@@ -10,6 +10,8 @@ import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -63,6 +65,23 @@ public class UmaUiManager {
                 settings.set(AppSettings.SettingKey.SKIP_VERSION, updateInfo.version().toString());
             }
             updater.askForUpdateCallback(updateInfo, false);
+        });
+    }
+
+    public void showUpdateDialog() {
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame();
+            frame.setAlwaysOnTop(true);
+            frame.setUndecorated(true);
+            frame.setTitle("Uma Launcher Update");
+            frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+            JLabel label = new JLabel("Uma Launcher is updating...");
+            label.setBorder(new CompoundBorder(label.getBorder(), new EmptyBorder(30, 20, 30, 20)));
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            frame.add(label);
+            frame.pack();
+            frame.setLocationRelativeTo(null);
+            frame.setVisible(true);
         });
     }
 }
