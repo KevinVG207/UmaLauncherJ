@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.window;
 
+import com.kevinvg.umalauncherj.StartupManager;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.tray.TrayIconController;
@@ -34,16 +35,18 @@ public class GameWindowManager {
     private Long closeNanos = null;
     private VpnManager vpnManager;
     private TrayIconController trayIcon;
+    private StartupManager startupManager;
 
     GameWindowManager() {
     }
 
     @Inject
-    public GameWindowManager(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager, TrayIconController trayIcon) {
+    public GameWindowManager(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager, TrayIconController trayIcon, StartupManager startupManager) {
         this.settings = settings;
         this.ui = ui;
         this.vpnManager = vpnManager;
         this.trayIcon = trayIcon;
+        this.startupManager = startupManager;
 
         MenuItem maximizeItem = new MenuItem("Maximize & center game");
         ActionListener maximizeListener = e -> this.maximizeAndCenter();
@@ -74,6 +77,10 @@ public class GameWindowManager {
 
     @Scheduled(every = "0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void checkForGameWindow() {
+        log.info("startupManager: {}", startupManager);
+        log.info("started: {}", startupManager.isStarted());
+        if (!startupManager.isStarted()) return;
+
         // Trying to find the game for the first time
         if (!gameWindowExists() && !hasExisted) {
             findGameWindow();

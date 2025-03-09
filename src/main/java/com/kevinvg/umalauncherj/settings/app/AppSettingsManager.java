@@ -9,6 +9,7 @@ import io.quarkus.runtime.Shutdown;
 import io.quarkus.runtime.Startup;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.Getter;
 import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +30,8 @@ public class AppSettingsManager {
     private ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
 
     private UmaUiManager ui;
+
+    private @Getter boolean loaded = false;
 
     @Inject
     AppSettingsManager(UmaUiManager ui) {
@@ -67,10 +70,11 @@ public class AppSettingsManager {
         overwriteSettings(loadedSettingsTree);
         log.info("Settings loaded");
         saveSettings();
+        loaded = true;
     }
 
     @Synchronized
-    public void saveSettings() {
+    private void saveSettings() {
         log.info("Saving settings");
         var settingsFile = getSettingsFile();
         var tmpSettingsFile = new File(settingsFile + ".tmp");

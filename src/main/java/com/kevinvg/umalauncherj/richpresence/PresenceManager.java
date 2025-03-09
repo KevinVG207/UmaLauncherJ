@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.richpresence;
 
+import com.kevinvg.umalauncherj.StartupManager;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import io.quarkus.runtime.Shutdown;
@@ -17,14 +18,16 @@ import net.arikia.dev.drpc.DiscordRichPresence;
 public class PresenceManager {
     private static final String APP_ID = "954453106765225995";
     private final AppSettingsManager settings;
+    private final StartupManager startupManager;
 
     PresenceFactory presenceFactory;
     DiscordRichPresence currentPresence;
 
     @Inject
-    public PresenceManager(AppSettingsManager settings, PresenceFactory presenceFactory) {
+    public PresenceManager(AppSettingsManager settings, PresenceFactory presenceFactory, StartupManager startupManager) {
         this.settings = settings;
         this.presenceFactory = presenceFactory;
+        this.startupManager = startupManager;
     }
 
     @Startup
@@ -40,6 +43,8 @@ public class PresenceManager {
 
     @Scheduled(every = "10s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void updateActivity() {
+        if (!startupManager.isStarted()) return;
+
         if (currentPresence == null) {
             return;
         }
@@ -56,6 +61,8 @@ public class PresenceManager {
 
     @Scheduled(every = "0.5s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void runCallbacks() {
+        if (!startupManager.isStarted()) return;
+
         DiscordRPC.discordRunCallbacks();
     }
 

@@ -196,14 +196,15 @@
                         <phase>package</phase>
                         <goals><goal>launch4j</goal></goals>
                         <configuration>
-                            <headerType>console</headerType>
+                            <headerType>gui</headerType>
                             <outfile>target/UmaLauncherJ.exe</outfile>
                             <jar>target/${project.artifactId}-${project.version}-runner.jar</jar>
                             <manifest>UmaLauncherJ.exe.manifest</manifest>
-                            <singleInstance>
-                                <mutexName>UmaLauncherJ</mutexName>
-                                <windowTitle>UmaLauncherJ</windowTitle>
-                            </singleInstance>
+                            <!-- Single instance disabled because it messes up with updates. TODO: Add custom lock mechanism -->
+<!--                            <singleInstance>-->
+<!--                                <mutexName>UmaLauncherJ</mutexName>-->
+<!--                                <windowTitle>UmaLauncherJ</windowTitle>-->
+<!--                            </singleInstance>-->
                             <chdir>.</chdir>
                             <stayAlive>true</stayAlive>
                         </configuration>

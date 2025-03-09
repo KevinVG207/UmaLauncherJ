@@ -2,14 +2,15 @@ package com.kevinvg.umalauncherj.util;
 
 //import com.kevinvg.umalauncherj.util.win32.User32;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.ptr.IntByReference;
-import io.quarkus.logging.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 public class Win32Util {
@@ -100,6 +101,43 @@ public class Win32Util {
         USER_32.GetMonitorInfo(monitor, monitorInfo);
         return Rect.fromWin32Rect(monitorInfo.rcWork);
     }
+
+    public static int getCurrentProcessId() {
+        return KERNEL_32.GetCurrentProcessId();
+    }
+
+    public static List<Integer> getProcessIdsOfExecutable() {
+        var processes = new ArrayList<ProcessInfo>();
+        var snapshot = KERNEL_32.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new WinDef.DWORD(0));
+        Tlhelp32.PROCESSENTRY32 pe = new Tlhelp32.PROCESSENTRY32();
+        KERNEL_32.Process32First(snapshot, pe);
+        ProcessInfo parent = null;
+        do {
+            var processInfo = new ProcessInfo(pe.th32ProcessID.intValue(), pe.th32ParentProcessID.intValue(), Native.toString(pe.szExeFile));
+            processes.add(processInfo);
+            if (processInfo.exeFile.equalsIgnoreCase(FileUtil.EXE_NAME)) {
+                parent = processInfo;
+            }
+        } while(KERNEL_32.Process32Next(snapshot, pe));
+
+        if (parent == null) {
+            return Collections.emptyList();
+        }
+
+        var out = new ArrayList<Integer>();
+
+        out.add(parent.processId);
+
+        for (var processInfo : processes) {
+            if (processInfo.parentId == parent.processId) {
+                out.add(processInfo.processId);
+            }
+        }
+
+        return out;
+    }
+
+    record ProcessInfo(int processId, int parentId, String exeFile){}
 
     //    public static void sendCloseSignal(WinDef.HWND handle) {
 //        log.info("Send close signal to {}", handle);
