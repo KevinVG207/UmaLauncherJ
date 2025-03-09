@@ -2,16 +2,13 @@ package com.kevinvg.umalauncherj.util;
 
 //import com.kevinvg.umalauncherj.util.win32.User32;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.ptr.IntByReference;
-import io.quarkus.logging.Log;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -109,7 +106,7 @@ public class Win32Util {
         return KERNEL_32.GetCurrentProcessId();
     }
 
-    public static List<Integer> getAllProcessIds() {
+    public static List<Integer> getProcessIdsOfExecutable() {
         var processes = new ArrayList<ProcessInfo>();
         var snapshot = KERNEL_32.CreateToolhelp32Snapshot(Tlhelp32.TH32CS_SNAPPROCESS, new WinDef.DWORD(0));
         Tlhelp32.PROCESSENTRY32 pe = new Tlhelp32.PROCESSENTRY32();

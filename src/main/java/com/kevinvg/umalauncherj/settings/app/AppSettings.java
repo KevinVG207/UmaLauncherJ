@@ -18,6 +18,7 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
     public enum SettingKey {
         VERSION,
         SKIP_VERSION,
+        ENABLE_BETA,
         WRITE_PACKETS,
         LOCK_GAME_WINDOW,
         AUTOCLOSE_DMM,
@@ -47,6 +48,12 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                 new StringSetting(version != null ? version : "0.0.0", "Version", "Version", true));
         this.settings.put(SettingKey.SKIP_VERSION,
                 new StringSetting("", "Skip update", "Version to skip updating to.", true));
+        this.settings.put(SettingKey.ENABLE_BETA,
+                new BoolSetting(
+                        false,
+                        "Enable beta releases.",
+                        "Opt-in to beta (prerelease) updates."
+                ));
         this.settings.put(SettingKey.ENABLE_LAUNCH_GAME,
                 new BoolSetting(
                         true,

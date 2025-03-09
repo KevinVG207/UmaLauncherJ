@@ -13,18 +13,13 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
@@ -102,8 +97,11 @@ public class Updater {
 
         UpdateInfo latestVersion = null;
         for (var release : releases) {
-            // TODO: Prerelease setting
             boolean isBeta = release.path("prerelease").asBoolean();
+
+            if (isBeta && Boolean.FALSE.equals(settings.<Boolean>get(AppSettings.SettingKey.ENABLE_BETA))) {
+                continue;
+            }
 
             String versionString = release.path("tag_name").asText("0.0.0");
             if (versionString.startsWith("v")) versionString = versionString.substring(1);
@@ -198,7 +196,7 @@ public class Updater {
 
         StringBuilder sb = new StringBuilder();
         sb.append("taskkill /F ");
-        for (int pid : Win32Util.getAllProcessIds()) {
+        for (int pid : Win32Util.getProcessIdsOfExecutable()) {
             sb.append("/PID ").append(pid).append(" ");
         }
         sb.append("& timeout /t 2 /nobreak && move /y \"%s\" \"%s\" && move /y \"%s\" \"%s\" && start /B \"\" \"%s\"".formatted(exePath, oldPath, tmpPath, exePath, exePathWithoutExt));
