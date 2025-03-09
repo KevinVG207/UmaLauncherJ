@@ -34,7 +34,7 @@ public class StartupManager {
             return;
         }
 
-        if (updater.isDone()) {
+        if (updater.isDone() && settings.isLoaded()) {
             started = true;
         }
     }
