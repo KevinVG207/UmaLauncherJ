@@ -1,6 +1,7 @@
 package com.kevinvg.umalauncherj.window;
 
 import com.kevinvg.umalauncherj.StartupManager;
+import com.kevinvg.umalauncherj.selenium.instances.GtEventHelper;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.tray.TrayIconController;
@@ -36,12 +37,13 @@ public class GameWindowManager {
     private VpnManager vpnManager;
     private TrayIconController trayIcon;
     private StartupManager startupManager;
+    private GtEventHelper gtEventHelper;
 
     GameWindowManager() {
     }
 
     @Inject
-    public GameWindowManager(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager, TrayIconController trayIcon, StartupManager startupManager) {
+    public GameWindowManager(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager, TrayIconController trayIcon, StartupManager startupManager, GtEventHelper gtEventHelper) {
         this.settings = settings;
         this.ui = ui;
         this.vpnManager = vpnManager;
@@ -65,6 +67,7 @@ public class GameWindowManager {
         lockWindowItem.setState(Boolean.TRUE.equals(settings.<Boolean>get(AppSettings.SettingKey.LOCK_GAME_WINDOW)));
         lockWindowItem.addItemListener(lockWindowListener);
         trayIcon.insertMenuItem(lockWindowItem, 0);
+        this.gtEventHelper = gtEventHelper;
     }
 
     private void saveCurrentWindowRect() {
@@ -77,8 +80,6 @@ public class GameWindowManager {
 
     @Scheduled(every = "0.5s", executionMaxDelay = "500ms", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
     void checkForGameWindow() {
-        log.info("startupManager: {}", startupManager);
-        log.info("started: {}", startupManager.isStarted());
         if (!startupManager.isStarted()) return;
 
         // Trying to find the game for the first time
@@ -128,6 +129,7 @@ public class GameWindowManager {
         log.info("Game window stopped existing.");
         handle = null;
         closeNanos = System.nanoTime();
+        gtEventHelper.close();
     }
 
     private void gameIsClosed() {

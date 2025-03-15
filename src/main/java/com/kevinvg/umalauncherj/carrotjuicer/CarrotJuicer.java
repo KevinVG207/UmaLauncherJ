@@ -3,6 +3,7 @@ package com.kevinvg.umalauncherj.carrotjuicer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevinvg.umalauncherj.StartupManager;
+import com.kevinvg.umalauncherj.packets.RequestPacket;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
@@ -161,5 +162,7 @@ public class CarrotJuicer {
                 log.warn("Failed to write request packet JSON.");
             }
         }
+
+        carrotJuicerTasks.runTasks(new RequestPacket(root));
     }
 }

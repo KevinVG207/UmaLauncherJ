@@ -47,6 +47,8 @@ public class HelperTableGenerator {
 
         Preset preset = presets.getFirst();
 
+        preset = new Preset();
+
         String html = new Overlay(preset).generate(trainingState);
 
         if (trainingState != prevTrainingState) {

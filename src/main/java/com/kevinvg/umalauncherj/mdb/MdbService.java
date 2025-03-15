@@ -1,6 +1,8 @@
 package com.kevinvg.umalauncherj.mdb;
 
+import com.kevinvg.umalauncherj.mdb.domain.SupportCard;
 import com.kevinvg.umalauncherj.ui.UmaUiManager;
+import io.quarkus.cache.CacheResult;
 import io.quarkus.runtime.Shutdown;
 import io.quarkus.runtime.Startup;
 import jakarta.annotation.PostConstruct;
@@ -12,9 +14,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 
 @Slf4j
@@ -158,5 +158,44 @@ public class MdbService {
             log.error("Exception fetching race grade for {}", programId);
         }
         return -1;
+    }
+
+    @CacheResult(cacheName = "SupportCardDict")
+    public Map<Integer, SupportCard> getSupportCardDict() {
+        try(var stmt = conn.prepareStatement("SELECT id, rarity, command_id, support_card_type, chara_id FROM support_card_data")) {
+            var rs = stmt.executeQuery();
+            Map<Integer, SupportCard> supportCardDict = new HashMap<>();
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                int rarity = rs.getInt(2);
+                int commandId = rs.getInt(3);
+                int supportCardType = rs.getInt(4);
+                int charaId = rs.getInt(5);
+                supportCardDict.put(id, new SupportCard(id, rarity, commandId, supportCardType, charaId));
+            }
+            return supportCardDict;
+        } catch (SQLException e) {
+            log.error("Exception fetching support card dict");
+            return Map.of();
+        }
+    }
+
+    @CacheResult(cacheName = "SingleModeUniqueCharaDict")
+    public Map<Integer, Map<Integer, Integer>> getSingleModeUniqueCharaDict() {
+        try (var stmt = conn.prepareStatement("SELECT scenario_id, partner_id, chara_id FROM single_mode_unique_chara")) {
+            Map<Integer, Map<Integer, Integer>> singleModeUniqueCharaDict = new HashMap<>();
+            var rs = stmt.executeQuery();
+            while (rs.next()) {
+                int scenarioId = rs.getInt(1);
+                int partnerId = rs.getInt(2);
+                int charaId = rs.getInt(3);
+                singleModeUniqueCharaDict.putIfAbsent(scenarioId, new HashMap<>());
+                singleModeUniqueCharaDict.get(scenarioId).put(partnerId, charaId);
+            }
+            return singleModeUniqueCharaDict;
+        } catch (SQLException e) {
+            log.error("Exception fetching single mode unique chara dict");
+            return Map.of();
+        }
     }
 }

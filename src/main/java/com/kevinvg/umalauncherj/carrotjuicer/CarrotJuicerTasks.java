@@ -14,6 +14,7 @@ import com.kevinvg.umalauncherj.richpresence.PresenceManager;
 import com.kevinvg.umalauncherj.selenium.instances.GtEventHelper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public class CarrotJuicerTasks {
     private CarrotJuicerUtil carrotJuicerUtil;
 
     private int previousRaceProgramId = -1;
+    private boolean autoplay = false;
 
     @Inject
     CarrotJuicerTasks(HelperTableGenerator helperTableGenerator, MdbService mdb, GtEventHelper gtEventHelper, PresenceManager presenceManager, PresenceFactory presenceFactory, ObjectMapper objectMapper, CarrotJuicerUtil carrotJuicerUtil) {
@@ -69,11 +71,12 @@ public class CarrotJuicerTasks {
 
     public void runTasks(RequestPacket request) {
         this.prevRequest = request;
+        this.autoplay = request.isAutoplay();
     }
 
     private void trainingRunTask(ResponsePacket response) {
         log.info("Training Run Task");
-        presenceManager.setPresence(presenceFactory.trainingActivity(response));
+        presenceManager.setPresence(presenceFactory.trainingActivity(response, autoplay));
 
         var charaInfo = response.getCharaInfo();
 

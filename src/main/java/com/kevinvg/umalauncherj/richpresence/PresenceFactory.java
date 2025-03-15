@@ -1,6 +1,7 @@
 package com.kevinvg.umalauncherj.richpresence;
 
 import com.kevinvg.umalauncherj.Constants;
+import com.kevinvg.umalauncherj.carrotjuicer.CarrotJuicerTasks;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import com.kevinvg.umalauncherj.util.GameUtil;
 import com.kevinvg.umalauncherj.util.UmapyoiUtil;
@@ -42,10 +43,11 @@ public class PresenceFactory {
         );
     }
 
-    public DiscordRichPresence trainingActivity(ResponsePacket response) {
+    public DiscordRichPresence trainingActivity(ResponsePacket response, boolean autoplay) {
         var charaInfo = response.getCharaInfo();
 
-        String title = "Training - " + GameUtil.turnToString(charaInfo.path("turn").asInt());
+        String auto = autoplay ? "\uD83E\uDD16 " : "";  // Robot emoji
+        String title = auto + "Training - " + GameUtil.turnToString(charaInfo.path("turn").asInt());
 
         int cardId = charaInfo.path("card_id").asInt(100101);
         int charaId = Integer.parseInt(String.valueOf(cardId).substring(0, 4));
@@ -62,7 +64,6 @@ public class PresenceFactory {
         int skillPt = charaInfo.path("skill_point").asInt();
         String descr = "%d %d %d %d %d | %d".formatted(speed, stamina, power, guts, wit, skillPt);
 
-        // TODO: Fetch discord assets and use character icon.
         String bigImage = umapyoiUtil.getCharaIcon(charaId);
         String bigImageText = umapyoiUtil.getCharaName(charaId) + "\n" + umapyoiUtil.getOutfitName(cardId);
 

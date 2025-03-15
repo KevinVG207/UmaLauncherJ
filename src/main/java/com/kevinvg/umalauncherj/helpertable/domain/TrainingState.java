@@ -1,11 +1,12 @@
 package com.kevinvg.umalauncherj.helpertable.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import lombok.Data;
 
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 public class TrainingState {
@@ -17,7 +18,9 @@ public class TrainingState {
     private final int maxEnergy;
     private final int fans;
     private final int skillPt;
-    private final List<CommandState> commands;
+    private final Map<CommandType, CommandState> commands;
+
+    private final Map<String, JsonNode> scenarioNodes = new HashMap<>();
 
     // TODO: Other stuff
 
@@ -33,25 +36,46 @@ public class TrainingState {
         this.fans = charaInfo.path("fans").asInt();
         this.skillPt = charaInfo.path("skill_point").asInt();
 
-        this.commands = new ArrayList<>();
+        this.commands = new EnumMap<>(CommandType.class);
 
         var root = responsePacket.getSingleModeData();
 
         var homeInfo = root.path("home_info");
 
         for (var commandInfo : homeInfo.path("command_info_array")) {
-            commands.add(CommandState.fromCommandInfo(commandInfo, charaInfo));
+            var commandState = CommandState.fromCommandInfo(commandInfo, charaInfo);
+            commands.put(commandState.getCommandType(), commandState);
+        }
+
+        for (var entry : root.properties()) {
+            if (entry.getKey().endsWith("_data_set")) {
+                scenarioNodes.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        for (var scenarioNode : scenarioNodes.values()) {
+            var commandInfoArray = scenarioNode.path("command_info_array");
+            if (commandInfoArray.isMissingNode() || commandInfoArray.isEmpty()) {
+                continue;
+            }
+            for (var commandInfo : commandInfoArray) {
+                var commandState = CommandState.fromCommandInfo(commandInfo, charaInfo);
+                var commandType = commandState.getCommandType();
+                if (commands.containsKey(commandType)) {
+                    commands.get(commandType).mergeParamsIncDecInfo(commandState.getParamsIncDecInfo());
+                }
+            }
         }
     }
 
-    public List<CommandState> getRelevantCommands() {
-        List<CommandState> out = new ArrayList<>();
-        for (var command : commands) {
-            if (command.getCommandType() == CommandType.UNKNOWN) {
+    public Map<CommandType, CommandState> getRelevantCommands() {
+        Map<CommandType, CommandState> relevantCommands = new EnumMap<>(CommandType.class);
+        for (var entry : commands.entrySet()) {
+            if (entry.getKey() == CommandType.UNKNOWN) {
                 continue;
             }
-            out.add(command);
+            relevantCommands.put(entry.getKey(), entry.getValue());
         }
-        return out;
+        return relevantCommands;
     }
 }

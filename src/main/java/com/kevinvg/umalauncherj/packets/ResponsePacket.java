@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.MissingNode;
 import lombok.Data;
 
 public class ResponsePacket {
-    private JsonNode data;
+    private final JsonNode data;
 
     public ResponsePacket(JsonNode data) {
         this.data = data;
