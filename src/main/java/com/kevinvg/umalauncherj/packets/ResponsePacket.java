@@ -2,7 +2,9 @@ package com.kevinvg.umalauncherj.packets;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.MissingNode;
-import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ResponsePacket {
     private final JsonNode data;
@@ -46,6 +48,16 @@ public class ResponsePacket {
         }
 
         return singleModeLoadCommon.path(key);
+    }
+
+    public Map<String, JsonNode> getSingleModeScenarioDataSets() {
+        Map<String, JsonNode> out = new HashMap<>();
+        for (var entry : data.properties()) {
+            if (entry.getKey().endsWith("_data_set")) {
+                out.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return out;
     }
 
     public boolean isTrainingRunTurn() {

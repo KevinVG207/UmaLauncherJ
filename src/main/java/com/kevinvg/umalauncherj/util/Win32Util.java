@@ -87,7 +87,7 @@ public class Win32Util {
             return;
         }
 
-        log.info("Moving {} with params {} {} {} {}", hWnd, left, top, width, height);
+//        log.info("Moving {} with params {} {} {} {}", hWnd, left, top, width, height);
         USER_32.MoveWindow(hWnd, left, top, width, height, true);
     }
 

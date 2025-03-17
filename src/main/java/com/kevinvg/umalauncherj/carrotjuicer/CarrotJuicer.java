@@ -55,7 +55,7 @@ public class CarrotJuicer {
     void processPackets() {
         if (!startupManager.isStarted()) return;
 
-        log.info("Processing packets");
+//        log.info("Processing packets");
         var newPacketNames = getNewPacketNames();
 
         for (var path : newPacketNames) {

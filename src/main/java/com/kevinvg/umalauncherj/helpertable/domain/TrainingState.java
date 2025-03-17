@@ -1,11 +1,9 @@
 package com.kevinvg.umalauncherj.helpertable.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
 import lombok.Data;
 
-import java.sql.Array;
 import java.util.*;
 
 @Data
@@ -47,13 +45,8 @@ public class TrainingState {
             commands.put(commandState.getCommandType(), commandState);
         }
 
-        for (var entry : root.properties()) {
-            if (entry.getKey().endsWith("_data_set")) {
-                scenarioNodes.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        for (var scenarioNode : scenarioNodes.values()) {
+        var scenarioDataSets = responsePacket.getSingleModeScenarioDataSets();
+        for (var scenarioNode : scenarioDataSets.values()) {
             var commandInfoArray = scenarioNode.path("command_info_array");
             if (commandInfoArray.isMissingNode() || commandInfoArray.isEmpty()) {
                 continue;

@@ -71,7 +71,7 @@ public abstract class Vpn {
         }
 
         log.info("Successfully connected to VPN server");
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         vpnManager.tray.setConnected();
         return true;
     }
