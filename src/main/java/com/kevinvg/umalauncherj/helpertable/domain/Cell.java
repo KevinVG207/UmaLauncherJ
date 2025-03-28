@@ -1,5 +1,6 @@
 package com.kevinvg.umalauncherj.helpertable.domain;
 
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,7 +24,7 @@ public class Cell extends HelperTableElement {
         this.title = title;
     }
 
-    public String generate(TrainingState state) {
+    public String generate(TrainingState state, Localizer loc) {
         var curStyle = this.style;
         if (this.bold) {
             curStyle += "font-weight:bold;";

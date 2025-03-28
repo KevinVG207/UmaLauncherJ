@@ -52,10 +52,7 @@ public class PresenceFactory {
 
         int cardId = charaInfo.path("card_id").asInt(100101);
         int charaId = Integer.parseInt(String.valueOf(cardId).substring(0, 4));
-        String scenarioName = Constants.SCENARIO_NAMES_MAP.getOrDefault(
-                charaInfo.path("scenario_id").asInt(-1),
-                "You are now breathing manually."
-        );
+        String scenarioName = loc.get("SCENARIO_NAME_" + charaInfo.path("scenario_id").asText());
 
         int speed = charaInfo.path("speed").asInt();
         int stamina = charaInfo.path("stamina").asInt();
