@@ -1,6 +1,7 @@
 package com.kevinvg.umalauncherj.window;
 
 import com.kevinvg.umalauncherj.StartupManager;
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.selenium.instances.GtEventHelper;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
@@ -38,24 +39,26 @@ public class GameWindowManager {
     private TrayIconController trayIcon;
     private StartupManager startupManager;
     private GtEventHelper gtEventHelper;
+    private Localizer loc;
 
     GameWindowManager() {
     }
 
     @Inject
-    public GameWindowManager(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager, TrayIconController trayIcon, StartupManager startupManager, GtEventHelper gtEventHelper) {
+    public GameWindowManager(AppSettingsManager settings, UmaUiManager ui, VpnManager vpnManager, TrayIconController trayIcon, StartupManager startupManager, GtEventHelper gtEventHelper, Localizer loc) {
         this.settings = settings;
         this.ui = ui;
         this.vpnManager = vpnManager;
         this.trayIcon = trayIcon;
         this.startupManager = startupManager;
+        this.loc = loc;
 
-        MenuItem maximizeItem = new MenuItem("Maximize & center game");
+        MenuItem maximizeItem = new MenuItem(loc.get("TRAY_MAXIMIZE_CENTER"));
         ActionListener maximizeListener = e -> this.maximizeAndCenter();
         maximizeItem.addActionListener(maximizeListener);
         trayIcon.insertMenuItem(maximizeItem, 0);
 
-        CheckboxMenuItem lockWindowItem = new CheckboxMenuItem("Lock game window");
+        CheckboxMenuItem lockWindowItem = new CheckboxMenuItem(loc.get("TRAY_LOCK_GAME_WINDOW"));
         ItemListener lockWindowListener = e -> {
             boolean checked = ((CheckboxMenuItem) e.getSource()).getState();
             settings.set(AppSettings.SettingKey.LOCK_GAME_WINDOW, checked);
@@ -121,7 +124,7 @@ public class GameWindowManager {
         vpnManager.connect();
         boolean success = DmmUtil.launchGame();
         if (!success) {
-            ui.showErrorDialog("Failed to start DMMGamePlayer.");
+            ui.showErrorDialog(loc.get("ERROR_DMM_START_FAIL"));
         }
     }
 

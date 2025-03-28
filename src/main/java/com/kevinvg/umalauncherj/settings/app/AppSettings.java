@@ -75,10 +75,10 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                 ));
         this.settings.put(SettingKey.SELECTED_BROWSER,
                 new ComboBoxSetting(
-                        "Auto",
+                        "AUTO",
                         "Show support bonds",
                         "Choose how to display support bonds.",
-                        List.of("Auto", "Firefox", "Chrome", "Edge")
+                        List.of("AUTO", "FIREFOX", "CHROME", "EDGE")
                 ));
         this.settings.put(SettingKey.WRITE_PACKETS,
                 new BoolSetting(
@@ -158,10 +158,10 @@ public class AppSettings extends Settings<AppSettings.SettingKey> {
                 ));
         this.settings.put(SettingKey.VPN_CLIENT,
                 new ComboBoxSetting(
-                        "SoftEther",
+                        "SOFTETHER",
                         "VPN client",
                         "Choose VPN client to use.<br>Restart Uma Launcher after changing this setting.",
-                        List.of("NordVPN", "OpenVPN", "SoftEther")
+                        List.of("NORDVPN", "OPENVPN", "SOFTETHER")
                 ));
         this.settings.put(SettingKey.VPN_OVERRIDE_STRING,
                 new StringSetting(

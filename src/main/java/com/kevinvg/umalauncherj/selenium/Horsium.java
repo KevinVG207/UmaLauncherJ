@@ -39,7 +39,7 @@ public abstract class Horsium {
         } catch (IllegalArgumentException e) {
             log.error("Invalid browser selected: {}", selectedBrowser);
             selectedBrowser = "AUTO";
-            settings.set(AppSettings.SettingKey.SELECTED_BROWSER, "Auto");
+            settings.set(AppSettings.SettingKey.SELECTED_BROWSER, "AUTO");
         }
 
         if (selectedBrowser.equals("AUTO")) {
