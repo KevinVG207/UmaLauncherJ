@@ -13,15 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 public class ListSetting extends Setting<List> {
-    public ListSetting(List<?> value, TypeReference<List> typeReference, String name, String description) {
-        super(value, typeReference, name, description);
+    public ListSetting(List<?> value, TypeReference<List> typeReference) {
+        super(value, typeReference);
     }
 
-    public ListSetting(List<?> value, TypeReference<List> typeReference, String name, String description, boolean hidden) {
-        super(value, typeReference, name, description, hidden);
+    public ListSetting(List<?> value, TypeReference<List> typeReference, boolean hidden) {
+        super(value, typeReference, hidden);
     }
 
-    public ListSetting(List<?> value, TypeReference<List> typeReference, String name, String description, boolean hidden, String tab) {
-        super(value, typeReference, name, description, hidden, tab);
+    public ListSetting(List<?> value, TypeReference<List> typeReference, boolean hidden, String tab) {
+        super(value, typeReference, hidden, tab);
     }
 }

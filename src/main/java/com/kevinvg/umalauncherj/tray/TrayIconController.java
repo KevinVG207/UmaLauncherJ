@@ -1,8 +1,7 @@
 package com.kevinvg.umalauncherj.tray;
 
-import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.util.ResourcesUtil;
-import com.kevinvg.umalauncherj.window.GameWindowManager;
 import io.quarkus.runtime.Quarkus;
 import io.quarkus.runtime.Shutdown;
 import jakarta.inject.Inject;
@@ -11,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 @Slf4j
 @Singleton
@@ -20,15 +18,21 @@ public class TrayIconController {
     private SystemTray systemTray = null;
     private final PopupMenu popupMenu = new PopupMenu();
 
-    private static final String DEFAULT_TOOLTIP = "Uma Launcher";
+    private static final String DEFAULT_TOOLTIP = "TRAY_DEFAULT_TOOLTIP";
+    private static final String VPN_CONNECTING = "TRAY_VPN_CONNECTING";
+    private static final String VPN_CONNECTED = "TRAY_VPN_CONNECTED";
+    private static final String QUIT = "TRAY_QUIT";
 
     private static final String DEFAULT_ICON = "trayIcons/default.png";
     private static final String CONNECTING_ICON = "trayIcons/connecting.png";
     private static final String CONNECTED_ICON = "trayIcons/connected.png";
 
+    private final Localizer loc;
 
     @Inject
-    TrayIconController() {
+    TrayIconController(Localizer loc) {
+        this.loc = loc;
+
         // Setup
         if (!SystemTray.isSupported()) {
             log.error("SystemTray not supported");
@@ -43,7 +47,7 @@ public class TrayIconController {
             throw new RuntimeException("Unable to load image from " + DEFAULT_ICON);
         }
 
-        MenuItem defaultItem = new MenuItem("Quit");
+        MenuItem defaultItem = new MenuItem(loc.get(QUIT));
         ActionListener listener = e -> {
             log.info(e.getActionCommand());
             this.quitAction();
@@ -51,7 +55,7 @@ public class TrayIconController {
         defaultItem.addActionListener(listener);
         popupMenu.add(defaultItem);
 
-        trayIcon = new TrayIcon(image, DEFAULT_TOOLTIP, popupMenu);
+        trayIcon = new TrayIcon(image, loc.get(DEFAULT_TOOLTIP), popupMenu);
 
         try {
             systemTray.add(trayIcon);
@@ -74,7 +78,7 @@ public class TrayIconController {
         }
 
         trayIcon.setImage(ResourcesUtil.loadImageFromResources(CONNECTING_ICON));
-        trayIcon.setToolTip("Connecting to VPN...");
+        trayIcon.setToolTip(loc.get(VPN_CONNECTING));
     }
 
     public void setConnected() {
@@ -83,7 +87,7 @@ public class TrayIconController {
         }
 
         trayIcon.setImage(ResourcesUtil.loadImageFromResources(CONNECTED_ICON));
-        trayIcon.setToolTip("UmaLauncher - VPN Connected");
+        trayIcon.setToolTip(loc.get(DEFAULT_TOOLTIP) + " - " + loc.get(VPN_CONNECTED));
     }
 
     public void resetStatus() {
@@ -92,7 +96,7 @@ public class TrayIconController {
         }
 
         trayIcon.setImage(ResourcesUtil.loadImageFromResources(DEFAULT_ICON));
-        trayIcon.setToolTip(DEFAULT_TOOLTIP);
+        trayIcon.setToolTip(loc.get(DEFAULT_TOOLTIP));
     }
 
     @Shutdown

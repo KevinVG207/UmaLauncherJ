@@ -8,15 +8,15 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 public class BoolSetting extends Setting<Boolean> {
-    public BoolSetting(Boolean value, String name, String description) {
-        super(value, new TypeReference<>(){}, name, description);
+    public BoolSetting(Boolean value) {
+        super(value, new TypeReference<>(){});
     }
 
-    public BoolSetting(Boolean value, String name, String description, boolean hidden) {
-        super(value, new TypeReference<>(){}, name, description, hidden);
+    public BoolSetting(Boolean value, boolean hidden) {
+        super(value, new TypeReference<>(){}, hidden);
     }
 
-    public BoolSetting(Boolean value, String name, String description, boolean hidden, String tab) {
-        super(value, new TypeReference<>(){}, name, description, hidden, tab);
+    public BoolSetting(Boolean value, boolean hidden, String tab) {
+        super(value, new TypeReference<>(){}, hidden, tab);
     }
 }

@@ -8,14 +8,14 @@ import java.util.List;
 
 public class PresetListSetting extends Setting<List<Preset>> {
     public PresetListSetting(List<Preset> value, String name, String description) {
-        super(value, new TypeReference<>(){}, name, description);
+        super(value, new TypeReference<>(){});
     }
 
-    public PresetListSetting(List<Preset> value, String name, String description, boolean hidden) {
-        super(value, new TypeReference<>(){}, name, description, hidden);
+    public PresetListSetting(List<Preset> value, boolean hidden) {
+        super(value, new TypeReference<>(){}, hidden);
     }
 
-    public PresetListSetting(List<Preset> value, String name, String description, boolean hidden, String tab) {
-        super(value, new TypeReference<>(){}, name, description, hidden, tab);
+    public PresetListSetting(List<Preset> value, boolean hidden, String tab) {
+        super(value, new TypeReference<>(){}, hidden, tab);
     }
 }

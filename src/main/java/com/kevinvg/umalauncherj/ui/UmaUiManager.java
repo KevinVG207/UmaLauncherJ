@@ -1,10 +1,10 @@
 package com.kevinvg.umalauncherj.ui;
 
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.update.UpdateInfo;
 import com.kevinvg.umalauncherj.update.Updater;
-import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Priority;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +27,15 @@ public class UmaUiManager {
         }
     }
 
+    private final Localizer loc;
+
+    @jakarta.inject.Inject
+    public UmaUiManager(Localizer loc) {
+        this.loc = loc;
+    }
+
     private void showStacktraceDialog(String message) {
-        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, "Uma Launcher Error", JOptionPane.ERROR_MESSAGE));
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, loc.get("UI_ERROR_WINDOW_TITLE"), JOptionPane.ERROR_MESSAGE));
     }
 
     public void showStacktraceDialog(Exception exception) {
@@ -38,7 +45,7 @@ public class UmaUiManager {
     }
 
     public void showErrorDialog(String message) {
-        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, "Uma Launcher Error", JOptionPane.ERROR_MESSAGE));
+        SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(null, message, loc.get("UI_ERROR_WINDOW_TITLE"), JOptionPane.ERROR_MESSAGE));
     }
 
     public void showInfoDialog(String title, String message) {
@@ -47,11 +54,11 @@ public class UmaUiManager {
 
     public void askForUpdate(UpdateInfo updateInfo, Updater updater, AppSettingsManager settings) {
         SwingUtilities.invokeLater(() -> {
-            String[] possibleValues = {"Yes", "No", "Skip this version"};
-            MessageWithLink message = new MessageWithLink("A new version of Uma Launcher was found.%nVersion: %s%s%n<a href=\"%s\">Release notes</a>%nUpdate now?".formatted(updateInfo.beta() ? "Pre-release " : "", updateInfo.version(), updateInfo.releaseNotesUrl()));
+            String[] possibleValues = {loc.get("UI_UPDATE_ASK_YES"), loc.get("UI_UPDATE_ASK_NO"), loc.get("UI_UPDATE_ASK_SKIP")};
+            MessageWithLink message = new MessageWithLink(loc.get("UI_UPDATE_MESSAGE").formatted(updateInfo.beta() ? loc.get("UI_UPDATE_MESSAGE_PRERELEASE") : "", updateInfo.version(), updateInfo.releaseNotesUrl()));
             JFrame frame = new JFrame();
             frame.setAlwaysOnTop(true);
-            int selected = JOptionPane.showOptionDialog(frame, message, "Uma Launcher Update", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[1]);
+            int selected = JOptionPane.showOptionDialog(frame, message, loc.get("UI_UPDATE_WINDOW_TITLE"), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, possibleValues, possibleValues[1]);
 
             if (selected == -1) {
                 updater.askForUpdateCallback(updateInfo, false);
@@ -73,9 +80,9 @@ public class UmaUiManager {
             JFrame frame = new JFrame();
             frame.setAlwaysOnTop(true);
             frame.setUndecorated(true);
-            frame.setTitle("Uma Launcher Update");
+            frame.setTitle(loc.get("UI_UPDATE_WINDOW_TITLE"));
             frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-            JLabel label = new JLabel("Uma Launcher is updating...");
+            JLabel label = new JLabel(loc.get("UI_UPDATE_UPDATING"));
             label.setBorder(new CompoundBorder(label.getBorder(), new EmptyBorder(30, 20, 30, 20)));
             label.setHorizontalAlignment(SwingConstants.CENTER);
             frame.add(label);

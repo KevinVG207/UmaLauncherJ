@@ -153,6 +153,14 @@ public class AppSettingsManager {
         }
     }
 
+    public String getLocName(AppSettings.SettingKey key) {
+        return this.settings.getLocName(key);
+    }
+
+    public String getLocDesc(AppSettings.SettingKey key) {
+        return this.settings.getLocDesc(key);
+    }
+
     @Shutdown(0)
     void shutdown() {
         saveSettings();

@@ -27,32 +27,26 @@ public abstract class Setting<T> {
         );
     }
 
-    @JsonIgnore
-    private String name = "";
-    @JsonIgnore
-    private String description = "";
     @Getter
     protected T value;
     @JsonIgnore
-    private String tab = "General";
+    private String tab = "GENERAL";
     @JsonIgnore
     private boolean hidden;
 
     @JsonIgnore
     private TypeReference<T> typeReference;
 
-    protected Setting(T value, TypeReference<T> typeReference, String name, String description) {
-        this(value, typeReference, name, description, false);
+    protected Setting(T value, TypeReference<T> typeReference) {
+        this(value, typeReference, false);
     }
 
-    protected Setting(T value, TypeReference<T> typeReference, String name, String description, boolean hidden) {
-        this(value, typeReference, name, description, hidden, "General");
+    protected Setting(T value, TypeReference<T> typeReference, boolean hidden) {
+        this(value, typeReference, hidden, "GENERAL");
     }
 
-    protected Setting(T value, TypeReference<T> typeReference, String name, String description, boolean hidden, String tab) {
+    protected Setting(T value, TypeReference<T> typeReference, boolean hidden, String tab) {
         this.typeReference = typeReference;
-        this.name = name;
-        this.description = description;
         this.hidden = hidden;
         this.tab = tab;
         setValue(value);

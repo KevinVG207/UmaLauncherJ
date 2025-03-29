@@ -1,9 +1,8 @@
 package com.kevinvg.umalauncherj.richpresence;
 
 import com.kevinvg.umalauncherj.Constants;
-import com.kevinvg.umalauncherj.carrotjuicer.CarrotJuicerTasks;
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.packets.ResponsePacket;
-import com.kevinvg.umalauncherj.util.GameUtil;
 import com.kevinvg.umalauncherj.util.UmapyoiUtil;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -17,10 +16,12 @@ public class PresenceFactory {
     private static final String DEFAULT_ICON = "umaicon";
 
     private final UmapyoiUtil umapyoiUtil;
+    private final Localizer loc;
 
     @Inject
-    PresenceFactory(UmapyoiUtil umapyoiUtil) {
+    PresenceFactory(UmapyoiUtil umapyoiUtil, Localizer loc) {
         this.umapyoiUtil = umapyoiUtil;
+        this.loc = loc;
     }
 
     private DiscordRichPresence createPresence(String title, String descr, String bigImage, String bigImageText, String smallImage, String smallImageText) {
@@ -34,10 +35,10 @@ public class PresenceFactory {
 
     public DiscordRichPresence defaultActivity() {
         return createPresence(
-                "Launching game...",
-                "Uma Launcher rich presence",
+                loc.get("PRESENCE_DEFAULT_TITLE"),
+                loc.get("PRESENCE_DEFAULT_DESCR"),
                 DEFAULT_ICON,
-                "It's Special Week!",
+                loc.get("PRESENCE_DEFAULT_BIGTEXT"),
                 "",
                 ""
         );
@@ -47,14 +48,11 @@ public class PresenceFactory {
         var charaInfo = response.getCharaInfo();
 
         String auto = autoplay ? "\uD83E\uDD16 " : "";  // Robot emoji
-        String title = auto + "Training - " + GameUtil.turnToString(charaInfo.path("turn").asInt());
+        String title = auto + loc.get("PRESENCE_TRAINING_TITLE") + " - " + loc.turnToString(charaInfo.path("turn").asInt());
 
         int cardId = charaInfo.path("card_id").asInt(100101);
         int charaId = Integer.parseInt(String.valueOf(cardId).substring(0, 4));
-        String scenarioName = Constants.SCENARIO_NAMES_MAP.getOrDefault(
-                charaInfo.path("scenario_id").asInt(-1),
-                "You are now breathing manually."
-        );
+        String scenarioName = loc.get("SCENARIO_NAME_" + charaInfo.path("scenario_id").asText());
 
         int speed = charaInfo.path("speed").asInt();
         int stamina = charaInfo.path("stamina").asInt();

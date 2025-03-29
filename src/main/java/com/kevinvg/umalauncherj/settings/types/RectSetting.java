@@ -13,15 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 public class RectSetting extends Setting<Rect> {
-    public RectSetting(Rect value, String name, String description) {
-        super(value, new TypeReference<>(){}, name, description);
+    public RectSetting(Rect value) {
+        super(value, new TypeReference<>(){});
     }
 
-    public RectSetting(Rect value, String name, String description, boolean hidden) {
-        super(value, new TypeReference<>(){}, name, description, hidden);
+    public RectSetting(Rect value, boolean hidden) {
+        super(value, new TypeReference<>(){}, hidden);
     }
 
-    public RectSetting(Rect value, String name, String description, boolean hidden, String tab) {
-        super(value, new TypeReference<>(){}, name, description, hidden, tab);
+    public RectSetting(Rect value, boolean hidden, String tab) {
+        super(value, new TypeReference<>(){}, hidden, tab);
     }
 }

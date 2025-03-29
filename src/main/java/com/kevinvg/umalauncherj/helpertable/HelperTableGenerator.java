@@ -3,6 +3,7 @@ package com.kevinvg.umalauncherj.helpertable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevinvg.umalauncherj.helpertable.domain.TrainingState;
 import com.kevinvg.umalauncherj.helpertable.elements.Overlay;
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import jakarta.annotation.PostConstruct;
@@ -19,6 +20,7 @@ import java.util.List;
 public class HelperTableGenerator {
     ObjectMapper mapper = new ObjectMapper();
     private final AppSettingsManager settings;
+    private Localizer loc;
 
     @Setter
     @Getter
@@ -28,8 +30,9 @@ public class HelperTableGenerator {
     private TrainingState prevTrainingState;
 
     @Inject
-    HelperTableGenerator(AppSettingsManager settings) {
+    HelperTableGenerator(AppSettingsManager settings, Localizer loc) {
         this.settings = settings;
+        this.loc = loc;
     }
 
     public String generateHtml() {
@@ -49,7 +52,7 @@ public class HelperTableGenerator {
 
         preset = new Preset();
 
-        String html = new Overlay(preset).generate(trainingState);
+        String html = new Overlay(preset).generate(trainingState, loc);
 
         if (trainingState != prevTrainingState) {
             prevTrainingState = trainingState;
