@@ -10,6 +10,6 @@ public class RequestPacket {
     }
 
     public boolean isAutoplay() {
-        return data.path("exec_mode_value").asInt(0) == 1;
+        return data.path("exec_auto_play_plan_id").asInt(0) != 0;
     }
 }
