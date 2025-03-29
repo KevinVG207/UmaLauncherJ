@@ -10,6 +10,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
+
+import javax.swing.*;
 
 @Slf4j
 @Data
@@ -62,4 +65,12 @@ public abstract class Setting<T> {
         }
     }
 
+    public JComponent makeUiComponent() {
+        String tmp = this.value.toString();
+        return new JLabel(tmp.substring(0, Math.min(15, tmp.length())));
+    }
+
+    public void applyUiComponent(JComponent component) {
+        throw new NotImplementedException("Applying setting from UI component not implemented");
+    }
 }

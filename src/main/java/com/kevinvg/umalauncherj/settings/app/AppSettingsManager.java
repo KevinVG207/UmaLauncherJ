@@ -24,7 +24,7 @@ import java.util.List;
 public class AppSettingsManager {
     private static final String SETTINGS_FILENAME = "umasettings.json";
 
-    private AppSettings settings;
+    private @Getter AppSettings settings;
 
     private ObjectMapper mapper = new ObjectMapper();
     private ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
@@ -36,6 +36,7 @@ public class AppSettingsManager {
     @Inject
     AppSettingsManager(UmaUiManager ui) {
         this.ui = ui;
+        ui.setAppSettingsManager(this);
         this.settings = new AppSettings();
 
         mapper.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
@@ -71,6 +72,9 @@ public class AppSettingsManager {
         log.info("Settings loaded");
         saveSettings();
         loaded = true;
+
+        // TODO: Delete this
+        this.ui.showPreferencesDialog();
     }
 
     @Synchronized

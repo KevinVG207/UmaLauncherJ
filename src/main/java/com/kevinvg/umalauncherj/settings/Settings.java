@@ -4,12 +4,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Data
 @EqualsAndHashCode
 public abstract class Settings<T extends Enum<?>> {
-    protected final Map<T, Setting<?>> settings = new HashMap<>();
+    protected final Map<T, Setting<?>> settings = new LinkedHashMap<>();
 
     private final String locTitle;
 

@@ -3,10 +3,14 @@ package com.kevinvg.umalauncherj.ui;
 import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
+import com.kevinvg.umalauncherj.ui.frames.PreferencesFrame;
 import com.kevinvg.umalauncherj.update.UpdateInfo;
 import com.kevinvg.umalauncherj.update.Updater;
+import io.quarkus.runtime.Startup;
 import jakarta.annotation.Priority;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
@@ -19,19 +23,13 @@ import java.io.StringWriter;
 @Singleton
 @Priority(999999)
 public class UmaUiManager {
-    static {
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     private final Localizer loc;
+    private @Setter AppSettingsManager appSettingsManager;
 
-    @jakarta.inject.Inject
-    public UmaUiManager(Localizer loc) {
+    @Inject
+    public UmaUiManager(Localizer loc) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
         this.loc = loc;
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     }
 
     private void showStacktraceDialog(String message) {
@@ -90,5 +88,9 @@ public class UmaUiManager {
             frame.setLocationRelativeTo(null);
             frame.setVisible(true);
         });
+    }
+
+    public void showPreferencesDialog() {
+        SwingUtilities.invokeLater(() -> new PreferencesFrame(appSettingsManager));
     }
 }
