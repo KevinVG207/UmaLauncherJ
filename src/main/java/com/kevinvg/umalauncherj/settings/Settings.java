@@ -11,11 +11,25 @@ import java.util.Map;
 public abstract class Settings<T extends Enum<?>> {
     protected final Map<T, Setting<?>> settings = new HashMap<>();
 
-    public Object getValue(final T key) {
+    private final String locTitle;
+
+    protected Settings(String locTitle) {
+        this.locTitle = locTitle;
+    }
+
+    public Object getValue(T key) {
         return settings.get(key).getValue();
     }
 
-    public void setValue(final T key, final Object value) {
+    public void setValue(T key, Object value) {
         settings.get(key).setValue(value);
+    }
+
+    public String getLocName(T key) {
+        return this.locTitle + "_NAME_" + key.name();
+    }
+
+    public String getLocDesc(T key) {
+        return this.locTitle + "_DESC_" + key.name();
     }
 }

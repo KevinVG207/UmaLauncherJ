@@ -1,7 +1,9 @@
 package com.kevinvg.umalauncherj;
 
+import com.kevinvg.umalauncherj.l18n.Localizer;
 import com.kevinvg.umalauncherj.richpresence.PresenceFactory;
 import com.kevinvg.umalauncherj.richpresence.PresenceManager;
+import com.kevinvg.umalauncherj.settings.app.AppSettings;
 import com.kevinvg.umalauncherj.settings.app.AppSettingsManager;
 import com.kevinvg.umalauncherj.util.FileUtil;
 import com.kevinvg.umalauncherj.util.Win32Util;
@@ -19,18 +21,24 @@ import java.awt.geom.Rectangle2D;
 @Slf4j
 @ApplicationScoped
 public class Sandbox {
+    private final Localizer localizer;
     AppSettingsManager settingsManager;
     PresenceManager presenceManager;
 
     @Inject
-    protected Sandbox(AppSettingsManager settingsManager, PresenceManager presenceManager) {
+    protected Sandbox(AppSettingsManager settingsManager, PresenceManager presenceManager, Localizer localizer) {
         this.settingsManager = settingsManager;
         this.presenceManager = presenceManager;
+        this.localizer = localizer;
     }
 
     @Startup
     public void init(@Observes StartupEvent ev) {
         log.info("Sandbox started");
+        for (var key : AppSettings.SettingKey.values()) {
+            log.info(localizer.get(settingsManager.getLocName(key)));
+            log.info(localizer.get(settingsManager.getLocDesc(key)));
+        }
     }
 
 //    @Scheduled(every = "1s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)

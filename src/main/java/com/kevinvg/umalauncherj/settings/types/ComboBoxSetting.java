@@ -14,12 +14,12 @@ public class ComboBoxSetting extends Setting<String> {
     @JsonIgnore
     private List<String> choices = Collections.emptyList();
 
-    public ComboBoxSetting(String value, String name, String description, List<String> choices) {
-        this(value, name, description, false, choices);
+    public ComboBoxSetting(String value, List<String> choices) {
+        this(value, false, choices);
     }
 
-    public ComboBoxSetting(String value, String name, String description, boolean hidden, List<String> choices) {
-        super(null, new TypeReference<>(){}, name, description, hidden);
+    public ComboBoxSetting(String value, boolean hidden, List<String> choices) {
+        super(null, new TypeReference<>(){}, hidden);
         this.choices = Collections.unmodifiableList(choices);
         setValue(value);
     }

@@ -12,15 +12,15 @@ import lombok.EqualsAndHashCode;
 @AllArgsConstructor
 @Data
 public class IntegerSetting extends Setting<Integer> {
-    public IntegerSetting(Integer value, String name, String description) {
-        super(value, new TypeReference<>(){}, name, description);
+    public IntegerSetting(Integer value) {
+        super(value, new TypeReference<>(){});
     }
 
-    public IntegerSetting(Integer value, String name, String description, boolean hidden) {
-        super(value, new TypeReference<>(){}, name, description, hidden);
+    public IntegerSetting(Integer value, boolean hidden) {
+        super(value, new TypeReference<>(){}, hidden);
     }
 
-    public IntegerSetting(Integer value, String name, String description, boolean hidden, String tab) {
-        super(value, new TypeReference<>(){}, name, description, hidden, tab);
+    public IntegerSetting(Integer value, boolean hidden, String tab) {
+        super(value, new TypeReference<>(){}, hidden, tab);
     }
 }

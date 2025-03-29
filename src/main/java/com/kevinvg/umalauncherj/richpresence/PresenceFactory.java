@@ -35,10 +35,10 @@ public class PresenceFactory {
 
     public DiscordRichPresence defaultActivity() {
         return createPresence(
-                "Launching game...",
-                "Uma Launcher rich presence",
+                loc.get("PRESENCE_DEFAULT_TITLE"),
+                loc.get("PRESENCE_DEFAULT_DESCR"),
                 DEFAULT_ICON,
-                "It's Special Week!",
+                loc.get("PRESENCE_DEFAULT_BIGTEXT"),
                 "",
                 ""
         );
@@ -48,7 +48,7 @@ public class PresenceFactory {
         var charaInfo = response.getCharaInfo();
 
         String auto = autoplay ? "\uD83E\uDD16 " : "";  // Robot emoji
-        String title = auto + "Training - " + loc.turnToString(charaInfo.path("turn").asInt());
+        String title = auto + loc.get("PRESENCE_TRAINING_TITLE") + " - " + loc.turnToString(charaInfo.path("turn").asInt());
 
         int cardId = charaInfo.path("card_id").asInt(100101);
         int charaId = Integer.parseInt(String.valueOf(cardId).substring(0, 4));
