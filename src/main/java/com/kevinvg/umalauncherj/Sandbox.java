@@ -35,10 +35,6 @@ public class Sandbox {
     @Startup
     public void init(@Observes StartupEvent ev) {
         log.info("Sandbox started");
-        for (var key : AppSettings.SettingKey.values()) {
-            log.info(localizer.get(settingsManager.getLocName(key)));
-            log.info(localizer.get(settingsManager.getLocDesc(key)));
-        }
     }
 
 //    @Scheduled(every = "1s", concurrentExecution = Scheduled.ConcurrentExecution.SKIP)
